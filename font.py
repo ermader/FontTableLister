@@ -24,7 +24,7 @@ class Font(object):
         self.scalerType, self.numTables, self.searchRange, self.entrySelector, self.rangeShift = struct.unpack(self.FONT_DIRECTORY_HEADER_FORMAT, directoryHeaderData)
 
         self.tables = []
-        for table in range(self.numTables) :
+        for _ in range(self.numTables) :
             self.tables.append(Table(self.fontFile))
             
             
