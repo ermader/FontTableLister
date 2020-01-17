@@ -5,7 +5,6 @@ Created on Jan 17, 2020
 '''
 
 import struct
-import string
 
 class Font(object):
     '''
@@ -40,7 +39,7 @@ class Table(object):
         directoryEntryData = fontFile.read(self.FONT_DIRECTORY_ENTRY_LENGTH)
         self.tag, self.checksum, self.offset, self.length = struct.unpack(self.FONT_DIRECTORY_ENTRY_FORMAT, directoryEntryData)
 
-    def tag_string(self) -> string:
+    def tag_string(self):
         # There's *got* to be a better way to do this...
         return "%c%c%c%c" % (self.tag[0], self.tag[1], self.tag[2], self.tag[3])
 
