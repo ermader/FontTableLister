@@ -4,7 +4,6 @@ Created on Jan 16, 2020
 @author: emader
 '''
 
-import struct
 import sys
 
 import font
