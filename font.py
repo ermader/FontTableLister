@@ -13,7 +13,7 @@ class File(object):
         self.fontFile = open(filePath, "rb")
         
         if filePath[-4:] == ".ttc":
-            collection = Collection(self.fontFile, self.fonts)
+            _ = Collection(self.fontFile, self.fonts)
         else:
             self.fonts.append(Font(self.fontFile))
         
@@ -26,7 +26,7 @@ class Collection(object):
         collectionHeaderData = fontFile.read(self.FONT_COLLECTION_HEADER_LENGTH)
         self.ttcTag, self.majorVersion, self.minorVersion, self.numFonts = struct.unpack(self.FONT_COLLECTION_HEADER_FORMAT, collectionHeaderData)
         
-        offsetListFormat = ">%dI" % (self.numFonts)
+        offsetListFormat = ">{:d}I".format(self.numFonts)
         offsetListLength = struct.calcsize(offsetListFormat)
         offsetListData = fontFile.read(offsetListLength)
         offsetList = struct.unpack(offsetListFormat, offsetListData)
