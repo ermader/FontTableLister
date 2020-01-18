@@ -67,6 +67,5 @@ class Table(object):
         self.tag, self.checksum, self.offset, self.length = struct.unpack(self.FONT_DIRECTORY_ENTRY_FORMAT, directoryEntryData)
 
     def tag_string(self):
-        # There's *got* to be a better way to do this...
-        return "%c%c%c%c" % (self.tag[0], self.tag[1], self.tag[2], self.tag[3])
+        return self.tag.decode("ascii")
 
