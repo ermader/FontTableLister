@@ -20,7 +20,9 @@ for fontFileName in sys.argv[1:] :
     for fontObject in fontFile.fonts:
         print("    Font {:d} contains {:d} tables.".format(fontNumber, len(fontObject.tables)))
         for table in fontObject.tables :
-            print("    '{:s}' {:10,d}".format(table.tag_string(), table.length))
+            print("    '{:s}' {:10,d}".format(table.tag, table.length))
+            if table.tag == 'head':
+                table.format()
         
         print()
         fontNumber += 1
