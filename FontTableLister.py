@@ -23,6 +23,8 @@ for fontFileName in sys.argv[1:] :
             print("    '{:s}' {:10,d}".format(table.tag, table.length))
             if table.tag == 'head':
                 table.format()
+            elif table.tag == 'hhea':
+                table.dump()
         
         print()
         fontNumber += 1

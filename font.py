@@ -6,7 +6,9 @@ Created on Jan 17, 2020
 
 import struct
 import math
-
+#
+# A bunch of these should probably be in a utility module
+#
 from datetime import datetime, timedelta, tzinfo, timezone
 
 ldtBase = datetime(1904, 1, 1, tzinfo=timezone.utc)
@@ -15,7 +17,7 @@ def formatLongDateTime(ldt):
     dateTime = ldtBase + timedelta(seconds=ldt)
     return dateTime.strftime("%A, %B %_d %Y %I:%M:%S %p %Z")
 
-def swapLongDateTime(lowWord, highWord):
+def swapLongDateTime(highWord, lowWord):
     return (highWord << 32) | lowWord
 
 def floatFromFixed(fixed):
@@ -24,6 +26,9 @@ def floatFromFixed(fixed):
     fractionPart = quotient - integerPart
     
     return integerPart + fractionPart
+
+def roundAndDivide(value, dividend):
+    return int((value + dividend - 1) / dividend)
 
 class File(object):
     
@@ -81,6 +86,10 @@ class Table(object):
 
     rawBytes = None
     
+    BYTES_PER_WORD = struct.calcsize(">H")
+    WORDS_PER_LINE = 16
+    BYTES_PER_LINE = BYTES_PER_WORD * WORDS_PER_LINE
+    
     @staticmethod
     def factory(fontFile):
         directoryEntryData = fontFile.read(Table.FONT_DIRECTORY_ENTRY_LENGTH)
@@ -104,6 +113,25 @@ class Table(object):
             self.rawBytes = self.fontFile.read(self.length)
             return self.rawBytes
 
+    def dump(self):
+        tableData = self.rawData()
+        wordsToDump = roundAndDivide(self.length, self.BYTES_PER_WORD)
+        linesToDump = roundAndDivide(wordsToDump, self.WORDS_PER_LINE)
+        rawWordsFormat = ">{:d}H".format(wordsToDump)
+        rawWords = struct.unpack(rawWordsFormat, tableData)
+        
+        lineOffset = 0
+        for line in range(linesToDump):
+            print("      0x{:08X}".format(lineOffset), end=":") # "=#" doesn't seem to work reliably
+            
+            wordsPerLine = min(self.WORDS_PER_LINE, wordsToDump - (lineOffset >> 1))
+            for word in range(wordsPerLine):
+                print(" 0x{:04X}".format(rawWords[(lineOffset >> 1) + word]), end="")
+            
+            lineOffset += self.BYTES_PER_LINE
+            print()
+        print()
+        
 # typedef struct {
 #     Fixed version;              // 00
 #     Fixed fontRevision;         // 04
@@ -137,8 +165,8 @@ class HeadTable(Table):
     def format(self):
         rawTable = self.rawData()
         version, revision, adjust, magic, flags, upm, cd0, cd1, md0, md1, xMin, yMin, xMax, yMax, style, lowPPEM, dirHint, ilocFormat, gdFormat = struct.unpack(self.HEAD_TABLE_FORMAT, rawTable)
-        creationDate = swapLongDateTime(cd1, cd0)
-        modDate = swapLongDateTime(md1, md0)
+        creationDate = swapLongDateTime(cd0, cd1)
+        modDate = swapLongDateTime(md0, md1)
         print("      Version = {:f}".format(floatFromFixed(version)))
         print("      Creation date = {:s}".format(formatLongDateTime(creationDate)))
         print("      Modification date = {:s}".format(formatLongDateTime(modDate)))
