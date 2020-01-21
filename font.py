@@ -17,6 +17,9 @@ def formatLongDateTime(ldt):
     dateTime = ldtBase + timedelta(seconds=ldt)
     return dateTime.strftime("%A, %B %_d %Y %I:%M:%S %p %Z")
 
+def formatFixed(fixed):
+    return "{:.3f}".format(floatFromFixed(fixed))
+
 def swapLongDateTime(highWord, lowWord):
     return (highWord << 32) | lowWord
 
@@ -157,7 +160,10 @@ class Table(object):
 #                                 // 54
 #     
 # } FFLRawHeadTable;
-        
+
+def formatLine(label, value):
+    print("      {:<25s}{:>40s}".format(label + ":", value))
+            
 class HeadTable(Table):
     HEAD_TABLE_FORMAT = ">iiIIHHIIIIhhhhHHhhh"
     HEAD_TABLE_LENGTH = struct.calcsize(HEAD_TABLE_FORMAT)
@@ -167,8 +173,9 @@ class HeadTable(Table):
         version, revision, adjust, magic, flags, upm, cd0, cd1, md0, md1, xMin, yMin, xMax, yMax, style, lowPPEM, dirHint, ilocFormat, gdFormat = struct.unpack(self.HEAD_TABLE_FORMAT, rawTable)
         creationDate = swapLongDateTime(cd0, cd1)
         modDate = swapLongDateTime(md0, md1)
-        print("      Version = {:f}".format(floatFromFixed(version)))
-        print("      Creation date = {:s}".format(formatLongDateTime(creationDate)))
-        print("      Modification date = {:s}".format(formatLongDateTime(modDate)))
+        formatLine("Version", formatFixed(version))
+        formatLine("Font revision", formatFixed(revision))
+        formatLine("Creation date", formatLongDateTime(creationDate))
+        formatLine("Modification date", formatLongDateTime(modDate))
         print()
     
