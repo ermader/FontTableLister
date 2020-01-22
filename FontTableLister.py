@@ -5,6 +5,7 @@ Created on Jan 16, 2020
 '''
 
 import sys
+import os
 import argparse
 
 import font
@@ -20,7 +21,7 @@ parser.add_argument("-l", "--list", action="store_true")
 arguments = parser.parse_args(sys.argv[1:])
 
 fileObject = arguments.file
-fileName = fileObject.name.split("/")[-1:][0] # [-1:] gives a list with 1 string in it, so need [0] to get the string
+fileName = fileObject.name.split(os.sep)[-1:][0] # [-1:] gives a list with 1 string in it, so need [0] to get the string
 
 print("{:s}:".format(fileName))
 fontFile = font.File(fileObject)
@@ -39,13 +40,17 @@ if arguments.list:
 for tableTag in arguments.dump:
     print("  Hex dump of '{:s}' table:".format(tableTag))
     table = fontObject.getTable(tableTag)
-    table.dump()
+    if table:
+        table.dump()
+        
     print()
     
 for tableTag in arguments.format:
     print("  Formatted '{:s}' table:".format(tableTag))
     table = fontObject.getTable(tableTag)
-    table.format()
+    if table:
+        table.format()
+        
     print()
     
 # for fontFileName in sys.argv[1:] :
