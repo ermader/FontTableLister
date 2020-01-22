@@ -5,42 +5,8 @@ Created on Jan 17, 2020
 '''
 
 import struct
-import math
-#
-# A bunch of these should probably be in a utility module
-#
-from datetime import datetime, timedelta, tzinfo, timezone
 
-ldtBase = datetime(1904, 1, 1, tzinfo=timezone.utc)
-
-def formatLongDateTime(ldt):
-    dateTime = ldtBase + timedelta(seconds=ldt)
-    return dateTime.strftime("%A, %B %_d %Y %I:%M:%S %p %Z")
-
-def formatHex16(value):
-    return "0x{:04X}".format(value)
-
-def formatHex32(value):
-    return "0x{:08X}".format(value)
-
-def formatDecimal(value):
-    return "{:d}".format(value)
-
-def formatFixed(fixed):
-    return "{:.3f}".format(floatFromFixed(fixed))
-
-def swapLongDateTime(highWord, lowWord):
-    return (highWord << 32) | lowWord
-
-def floatFromFixed(fixed):
-    quotient = fixed / 65536.0
-    integerPart = math.floor(quotient)
-    fractionPart = quotient - integerPart
-    
-    return integerPart + fractionPart
-
-def roundAndDivide(value, dividend):
-    return int((value + dividend - 1) / dividend)
+import utility
 
 class File(object):
     
@@ -127,18 +93,18 @@ class Table(object):
 
     def dump(self):
         tableData = self.rawData()
-        wordsToDump = roundAndDivide(self.length, self.BYTES_PER_WORD)
-        linesToDump = roundAndDivide(wordsToDump, self.WORDS_PER_LINE)
+        wordsToDump = utility.roundAndDivide(self.length, self.BYTES_PER_WORD)
+        linesToDump = utility.roundAndDivide(wordsToDump, self.WORDS_PER_LINE)
         rawWordsFormat = ">{:d}H".format(wordsToDump)
         rawWords = struct.unpack(rawWordsFormat, tableData)
         
         lineOffset = 0
         for line in range(linesToDump):
-            print("      {:s}".format(formatHex32(lineOffset)), end=":")
+            print("      {:s}".format(utility.formatHex32(lineOffset)), end=":")
             
             wordsPerLine = min(self.WORDS_PER_LINE, wordsToDump - (lineOffset >> 1))
             for word in range(wordsPerLine):
-                print(" {:s}".format(formatHex16(rawWords[(lineOffset >> 1) + word])), end="")
+                print(" {:s}".format(utility.formatHex16(rawWords[(lineOffset >> 1) + word])), end="")
             
             lineOffset += self.BYTES_PER_LINE
             print()
@@ -184,24 +150,24 @@ class HeadTable(Table):
     def format(self):
         rawTable = self.rawData()
         version, revision, adjust, magic, flags, upm, cd0, cd1, md0, md1, xMin, yMin, xMax, yMax, style, lowPPEM, dirHint, ilocFormat, gdFormat = struct.unpack(self.HEAD_TABLE_FORMAT, rawTable)
-        creationDate = swapLongDateTime(cd0, cd1)
-        modDate = swapLongDateTime(md0, md1)
-        formatLine("Version", formatFixed(version))
-        formatLine("Font Revision", formatFixed(revision))
-        formatLine("Checksum Adjustment", formatHex32(adjust))
-        formatLine("Magic Number", formatHex32(magic))
-        formatLine("Flags", formatHex16(flags))
-        formatLine("Units Per EM", formatDecimal(upm))
-        formatLine("Creation Date", formatLongDateTime(creationDate))
-        formatLine("Modification Date", formatLongDateTime(modDate))
-        formatLine("xMin", formatDecimal(xMin))
-        formatLine("yMin", formatDecimal(yMin))
-        formatLine("xMax", formatDecimal(xMax))
-        formatLine("yMax", formatDecimal(yMax))
-        formatLine("Mac Style", formatHex16(style))
-        formatLine("Lowest Rec PPEM", formatDecimal(lowPPEM))
-        formatLine("Font Direction Hint", formatDecimal(dirHint))
-        formatLine("Index to Loc Format", formatDecimal(ilocFormat))
-        formatLine("Glyh Data Format", formatDecimal(gdFormat))
+        creationDate = utility.swapLongDateTime(cd0, cd1)
+        modDate = utility.swapLongDateTime(md0, md1)
+        formatLine("Version", utility.formatFixed(version))
+        formatLine("Font Revision", utility.formatFixed(revision))
+        formatLine("Checksum Adjustment", utility.formatHex32(adjust))
+        formatLine("Magic Number", utility.formatHex32(magic))
+        formatLine("Flags", utility.formatHex16(flags))
+        formatLine("Units Per EM", utility.formatDecimal(upm))
+        formatLine("Creation Date", utility.formatLongDateTime(creationDate))
+        formatLine("Modification Date", utility.formatLongDateTime(modDate))
+        formatLine("xMin", utility.formatDecimal(xMin))
+        formatLine("yMin", utility.formatDecimal(yMin))
+        formatLine("xMax", utility.formatDecimal(xMax))
+        formatLine("yMax", utility.formatDecimal(yMax))
+        formatLine("Mac Style", utility.formatHex16(style))
+        formatLine("Lowest Rec PPEM", utility.formatDecimal(lowPPEM))
+        formatLine("Font Direction Hint", utility.formatDecimal(dirHint))
+        formatLine("Index to Loc Format", utility.formatDecimal(ilocFormat))
+        formatLine("Glyh Data Format", utility.formatDecimal(gdFormat))
         print()
     
