@@ -7,12 +7,15 @@ Created on Jan 17, 2020
 import struct
 
 import utility
+from pip._vendor.html5lib.constants import tableInsertModeElements
+from test.test_decimal import file
 
 class File(object):
     
-    def __init__(self, filePath):
+    def __init__(self, file):
         self.fonts = []
-        self.fontFile = open(filePath, "rb")
+        self.fontFile = file
+        filePath = file.name
         
         if filePath[-4:] == ".ttc":
             _ = Collection(self.fontFile, self.fonts)
@@ -53,7 +56,13 @@ class Font(object):
         self.tables = []
         for _ in range(self.numTables) :
             self.tables.append(Table.factory(fontFile))
-            
+     
+    def getTable(self, tableTag):
+        for table in self.tables:
+            if table.tag == tableTag:
+                return table
+        
+        return None       
             
 class Table(object):
     '''
