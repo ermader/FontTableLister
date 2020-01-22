@@ -17,6 +17,15 @@ def formatLongDateTime(ldt):
     dateTime = ldtBase + timedelta(seconds=ldt)
     return dateTime.strftime("%A, %B %_d %Y %I:%M:%S %p %Z")
 
+def formatHex16(value):
+    return "0x{:04X}".format(value)
+
+def formatHex32(value):
+    return "0x{:08X}".format(value)
+
+def formatDecimal(value):
+    return "{:d}".format(value)
+
 def formatFixed(fixed):
     return "{:.3f}".format(floatFromFixed(fixed))
 
@@ -125,16 +134,20 @@ class Table(object):
         
         lineOffset = 0
         for line in range(linesToDump):
-            print("      0x{:08X}".format(lineOffset), end=":") # "=#" doesn't seem to work reliably
+            print("      {:s}".format(formatHex32(lineOffset)), end=":")
             
             wordsPerLine = min(self.WORDS_PER_LINE, wordsToDump - (lineOffset >> 1))
             for word in range(wordsPerLine):
-                print(" 0x{:04X}".format(rawWords[(lineOffset >> 1) + word]), end="")
+                print(" {:s}".format(formatHex16(rawWords[(lineOffset >> 1) + word])), end="")
             
             lineOffset += self.BYTES_PER_LINE
             print()
         print()
-        
+     
+    def format(self):
+        print("      Don't know how to format a '{:s}' table.".format(self.tag))
+        print()
+            
 # typedef struct {
 #     Fixed version;              // 00
 #     Fixed fontRevision;         // 04
@@ -174,8 +187,21 @@ class HeadTable(Table):
         creationDate = swapLongDateTime(cd0, cd1)
         modDate = swapLongDateTime(md0, md1)
         formatLine("Version", formatFixed(version))
-        formatLine("Font revision", formatFixed(revision))
-        formatLine("Creation date", formatLongDateTime(creationDate))
-        formatLine("Modification date", formatLongDateTime(modDate))
+        formatLine("Font Revision", formatFixed(revision))
+        formatLine("Checksum Adjustment", formatHex32(adjust))
+        formatLine("Magic Number", formatHex32(magic))
+        formatLine("Flags", formatHex16(flags))
+        formatLine("Units Per EM", formatDecimal(upm))
+        formatLine("Creation Date", formatLongDateTime(creationDate))
+        formatLine("Modification Date", formatLongDateTime(modDate))
+        formatLine("xMin", formatDecimal(xMin))
+        formatLine("yMin", formatDecimal(yMin))
+        formatLine("xMax", formatDecimal(xMax))
+        formatLine("yMax", formatDecimal(yMax))
+        formatLine("Mac Style", formatHex16(style))
+        formatLine("Lowest Rec PPEM", formatDecimal(lowPPEM))
+        formatLine("Font Direction Hint", formatDecimal(dirHint))
+        formatLine("Index to Loc Format", formatDecimal(ilocFormat))
+        formatLine("Glyh Data Format", formatDecimal(gdFormat))
         print()
     

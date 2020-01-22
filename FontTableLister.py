@@ -25,6 +25,8 @@ for fontFileName in sys.argv[1:] :
                 table.format()
             elif table.tag == 'hhea':
                 table.dump()
+            elif table.tag == 'cmap':
+                table.format()
         
         print()
         fontNumber += 1
