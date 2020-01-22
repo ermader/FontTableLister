@@ -177,6 +177,6 @@ class HeadTable(Table):
         formatLine("Lowest Rec PPEM", utility.formatDecimal(lowPPEM))
         formatLine("Font Direction Hint", utility.formatDecimal(dirHint))
         formatLine("Index to Loc Format", utility.formatDecimal(ilocFormat))
-        formatLine("Glyh Data Format", utility.formatDecimal(gdFormat))
+        formatLine("Glyph Data Format", utility.formatDecimal(gdFormat))
         print()
     
