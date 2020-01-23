@@ -15,7 +15,7 @@ def formatLongDateTime(ldt):
 
 def formatHex16(value, withPrefix=True):
     if withPrefix:
-        formatString = "{:#06X}"
+        formatString = "0x{:04X}"
     else:
         formatString = "{:04X}"
         
@@ -23,7 +23,7 @@ def formatHex16(value, withPrefix=True):
 
 def formatHex32(value, withPrefix=True):
     if withPrefix:
-        formatString = "{:#010X}"
+        formatString = "0x{:08X}"
     else:
         formatString = "{:08X}"
         

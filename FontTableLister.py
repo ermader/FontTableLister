@@ -10,13 +10,13 @@ import argparse
 
 import font
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(prog="FontTableLister")
 
-parser.add_argument("file", type=argparse.FileType("rb"))
-parser.add_argument("-i", "--index", type=int, default=0)
-parser.add_argument("-d", "--dump", action="append")
-parser.add_argument("-f", "--format", action="append")
-parser.add_argument("-l", "--list", action="store_true")
+parser.add_argument("file", type=argparse.FileType("rb"), help="the font file to examine")
+parser.add_argument("-i", "--index", type=int, default=0, metavar="font_index", help="the subfont to examine. (default = %(default)s)")
+parser.add_argument("-d", "--dump", action="append", metavar="table", help="hex dump the table")
+parser.add_argument("-f", "--format", action="append", metavar="table", help="show the formatted table")
+parser.add_argument("-l", "--list", action="store_true", help="list all the tables in the font")
 
 arguments = parser.parse_args(sys.argv[1:])
 
