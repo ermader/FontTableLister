@@ -33,7 +33,7 @@ if arguments.list:
     print("  Font {:d} contains {:d} tables:".format(fontIndex, len(fontObject.tables)))
     
     for table in fontObject.tables:
-        print("    '{:s}' {:10,d}".format(table.tag, table.length))
+        print("    '{:s}' 0x{:08X} 0x{:08X} {:10,d}".format(table.tag, table.checksum, table.offset, table.length))
     
     print()
 
