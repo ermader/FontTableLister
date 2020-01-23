@@ -37,21 +37,23 @@ if arguments.list:
     
     print()
 
-for tableTag in arguments.dump:
-    print("  Hex dump of '{:s}' table:".format(tableTag))
-    table = fontObject.getTable(tableTag)
-    if table:
-        table.dump()
-        
-    print()
-    
-for tableTag in arguments.format:
-    print("  Formatted '{:s}' table:".format(tableTag))
-    table = fontObject.getTable(tableTag)
-    if table:
-        table.format()
-        
-    print()
+if arguments.dump:
+    for tableTag in arguments.dump:
+        print("  Hex dump of '{:s}' table:".format(tableTag))
+        table = fontObject.getTable(tableTag)
+        if table:
+            table.dump()
+            
+        print()
+
+if arguments.format:    
+    for tableTag in arguments.format:
+        print("  Formatted '{:s}' table:".format(tableTag))
+        table = fontObject.getTable(tableTag)
+        if table:
+            table.format()
+            
+        print()
     
 # for fontFileName in sys.argv[1:] :
 #     fontFile = font.File(fontFileName)
