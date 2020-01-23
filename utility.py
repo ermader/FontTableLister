@@ -13,11 +13,22 @@ def formatLongDateTime(ldt):
     dateTime = ldtBase + timedelta(seconds=ldt)
     return dateTime.strftime("%A, %B %_d %Y %I:%M:%S %p %Z")
 
-def formatHex16(value):
-    return "0x{:04X}".format(value)
+def formatHex16(value, withPrefix=True):
+    if withPrefix:
+        formatString = "{:#06X}"
+    else:
+        formatString = "{:04X}"
+        
+    return formatString.format(value)
 
-def formatHex32(value):
-    return "0x{:08X}".format(value)
+def formatHex32(value, withPrefix=True):
+    if withPrefix:
+        formatString = "{:#010X}"
+    else:
+        formatString = "{:08X}"
+        
+    return formatString.format(value)
+
 
 def formatDecimal(value):
     return "{:d}".format(value)

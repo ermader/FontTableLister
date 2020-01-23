@@ -108,12 +108,12 @@ class Table(object):
         rawWords = struct.unpack(rawWordsFormat, tableData)
         
         lineOffset = 0
-        for line in range(linesToDump):
-            print("      {:s}".format(utility.formatHex32(lineOffset)), end=":")
+        for _ in range(linesToDump):
+            print("      {:s}".format(utility.formatHex32(lineOffset, withPrefix=False)), end=":")
             
             wordsPerLine = min(self.WORDS_PER_LINE, wordsToDump - (lineOffset >> 1))
             for word in range(wordsPerLine):
-                print(" {:s}".format(utility.formatHex16(rawWords[(lineOffset >> 1) + word])), end="")
+                print(" {:s}".format(utility.formatHex16(rawWords[(lineOffset >> 1) + word], withPrefix=False)), end="")
             
             lineOffset += self.BYTES_PER_LINE
             print()
