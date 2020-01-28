@@ -16,7 +16,7 @@ class File(object):
         self.fontFile = file
         filePath = file.name
 
-        if filePath[-4:] == ".ttc":
+        if filePath.endswith(".ttc"):
             _ = Collection(self.fontFile, self.fonts)
         else:
             self.fonts.append(Font(self.fontFile))
