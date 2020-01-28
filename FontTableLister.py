@@ -23,23 +23,23 @@ arguments = parser.parse_args(sys.argv[1:])
 fileObject = arguments.file
 fileName = fileObject.name.split(os.sep)[-1:][0] # [-1:] gives a list with 1 string in it, so need [0] to get the string
 
-print("{:s}:".format(fileName))
+print(f"{fileName}:")
 fontFile = FontFile.File(fileObject)
 
 fontIndex = min(len(fontFile.fonts) - 1, arguments.index)
 fontObject = fontFile.fonts[fontIndex]
 
 if arguments.list:
-    print("  Font {:d} contains {:d} tables:".format(fontIndex, len(fontObject.tables)))
+    print(f"  Font {fontIndex:d} contains {len(fontObject.tables):d} tables:")
     
     for table in fontObject.tables:
-        print("    '{:s}' 0x{:08X} 0x{:08X} {:10,d}".format(table.tag, table.checksum, table.offset, table.length))
+        print(f"    '{table.tag}' 0x{table.checksum:08X} 0x{table.offset:08X} {table.length:10,d}")
     
     print()
 
 if arguments.dump:
     for tableTag in arguments.dump:
-        print("  Hex dump of '{:s}' table:".format(tableTag))
+        print(f"  Hex dump of '{tableTag}' table:")
         table = fontObject.getTable(tableTag)
         if table:
             table.dump()
@@ -48,7 +48,7 @@ if arguments.dump:
 
 if arguments.format:    
     for tableTag in arguments.format:
-        print("  Formatted '{:s}' table:".format(tableTag))
+        print(f"  Formatted '{tableTag}' table:")
         table = fontObject.getTable(tableTag)
         if table:
             table.format()

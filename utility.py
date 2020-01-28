@@ -15,26 +15,21 @@ def formatLongDateTime(ldt):
 
 def formatHex16(value, withPrefix=True):
     if withPrefix:
-        formatString = "0x{:04X}"
+        return f"0x{value:04X}"
     else:
-        formatString = "{:04X}"
-        
-    return formatString.format(value)
+        return f"{value:04X}"
 
 def formatHex32(value, withPrefix=True):
     if withPrefix:
-        formatString = "0x{:08X}"
+        return f"0x{value:08X}"
     else:
-        formatString = "{:08X}"
-        
-    return formatString.format(value)
-
+        return f"{value:08X}"
 
 def formatDecimal(value):
-    return "{:d}".format(value)
+    return f"{value:d}"
 
 def formatFixed(fixed):
-    return "{:.3f}".format(floatFromFixed(fixed))
+    return f"{floatFromFixed(fixed):.3f}"
 
 def swapLongDateTime(highWord, lowWord):
     return (highWord << 32) | lowWord

@@ -10,7 +10,7 @@ import utility
 
 
 def formatLine(label, value):
-    print("      {:<25s}{:>40s}".format(label + ":", value))
+    print(f"      {label + ':':<25s}{value:>40s}")
 
 class Table(object):
     '''
@@ -43,21 +43,21 @@ class Table(object):
         tableData = self.rawData()
         wordsToDump = utility.roundAndDivide(self.length, self.BYTES_PER_WORD)
         linesToDump = utility.roundAndDivide(wordsToDump, self.WORDS_PER_LINE)
-        rawWordsFormat = ">{:d}H".format(wordsToDump)
+        rawWordsFormat = f">{wordsToDump:d}H"
         rawWords = struct.unpack(rawWordsFormat, tableData)
 
         lineOffset = 0
         for _ in range(linesToDump):
-            print("      {:s}".format(utility.formatHex32(lineOffset, withPrefix=False)), end=":")
+            print(f"      {utility.formatHex32(lineOffset, withPrefix=False):s}", end=":")
 
             wordsPerLine = min(self.WORDS_PER_LINE, wordsToDump - (lineOffset >> 1))
             for word in range(wordsPerLine):
-                print(" {:s}".format(utility.formatHex16(rawWords[(lineOffset >> 1) + word], withPrefix=False)), end="")
+                print(f" {utility.formatHex16(rawWords[(lineOffset >> 1) + word], withPrefix=False):s}", end="")
 
             lineOffset += self.BYTES_PER_LINE
             print()
         print()
 
     def format(self):
-        print("      Don't know how to format a '{:s}' table.".format(self.tag))
+        print(f"      Don't know how to format a '{self.tag:s}' table.")
         print()

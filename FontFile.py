@@ -32,7 +32,7 @@ class Collection(object):
         self.ttcTag, self.majorVersion, self.minorVersion, self.numFonts = struct.unpack(
             self.FONT_COLLECTION_HEADER_FORMAT, collectionHeaderData)
 
-        offsetListFormat = ">{:d}I".format(self.numFonts)
+        offsetListFormat = f">{self.numFonts:d}I"
         offsetListLength = struct.calcsize(offsetListFormat)
         offsetListData = fontFile.read(offsetListLength)
         offsetList = struct.unpack(offsetListFormat, offsetListData)
