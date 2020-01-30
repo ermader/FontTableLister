@@ -11,7 +11,8 @@ ldtBase = datetime(1904, 1, 1, tzinfo=timezone.utc)
 
 def formatLongDateTime(ldt):
     dateTime = ldtBase + timedelta(seconds=ldt)
-    return dateTime.strftime("%A, %B %_d %Y %I:%M:%S %p %Z")
+    # return dateTime.strftime("%A, %B %_d %Y %I:%M:%S %p %Z")
+    return dateTime.strftime("%b %_d %Y %I:%M:%S %p %Z")
 
 def formatHex16(value, withPrefix=True):
     if withPrefix:

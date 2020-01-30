@@ -10,7 +10,7 @@ import utility
 
 
 def formatLine(label, value):
-    print(f"      {label + ':':<25s}{value:>40s}")
+    print(f"      {label + ':':<25s}{value:>30s}")
 
 class Table(object):
     '''
