@@ -19,8 +19,8 @@ class UnicodeNameRecord(NameRecord.NameRecord):
     ENCODING_ID_UNICODE_VARIATION_SEQUENCES = 5
     ENCODING_ID_UNICODE_FULL = 6
 
-    def __init(self, platformID, encodingID, languageID, nameID, length, offset):
-        NameRecord.__init__(self, platformID, encodingID, languageID, nameID, length, offset)
+    def __init__(self, platformID, encodingID, languageID, nameID, length, offset):
+        NameRecord.NameRecord.__init__(self, platformID, encodingID, languageID, nameID, length, offset)
 
         self.encodingNames = {
             self.ENCODING_ID_UNICODE_1_0 : "Unicode 1.0",
