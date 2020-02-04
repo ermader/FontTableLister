@@ -70,14 +70,27 @@ class NameRecord:
             self.NAME_ID_SAMPLE_TEXT : "Sample Text"
         }
 
+        self.encodingNames = {}
+        self.languageNames = {}
+
 
     def platformName(self):
         return f"Platform {self.platformID:d}"
 
     def encodingName(self):
+        name = self.encodingNames.get(self.encodingID)
+
+        if name is not None:
+            return name
+
         return f"Encoding {self.encodingID:d}"
 
     def languageName(self):
+        name = self.languageNames.get(self.languageID)
+
+        if name is not None:
+            return name
+
         return f"Language {self.languageID:d}"
 
     def nameIDName(self):

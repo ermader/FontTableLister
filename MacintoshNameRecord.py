@@ -81,11 +81,3 @@ class MacintoshNameRecord(NameRecord.NameRecord):
 
     def platformName(self):
         return "Macintosh"
-
-    def encodingName(self):
-        name = self.encodingNames.get(self.encodingID)
-
-        if name is not None:
-            return name
-
-        return NameRecord.encodingName(self)

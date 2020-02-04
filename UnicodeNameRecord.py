@@ -35,11 +35,3 @@ class UnicodeNameRecord(NameRecord.NameRecord):
     def platformName(self):
         return "Unicode"
 
-    def encodingName(self):
-        name = self.encodingNames.get(self.encodingID)
-
-        if name is not None:
-            return name
-
-        return NameRecord.encodingName(self)
-
