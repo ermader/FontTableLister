@@ -8,6 +8,7 @@ import struct
 import FontTable
 import HeadTable
 import HheaTable
+import NameTable
 import MaxpTable
 
 FONT_DIRECTORY_ENTRY_FORMAT = ">4sIII"
@@ -21,6 +22,8 @@ def tableFactory(fontFile):
         return HeadTable.Table(fontFile, tagBytes, checksum, offset, length)
     elif tagBytes == b'hhea':
         return HheaTable.Table(fontFile, tagBytes, checksum, offset, length)
+    elif tagBytes == b'name':
+        return NameTable.NameTable(fontFile, tagBytes, checksum, offset, length)
     elif tagBytes == b'maxp':
         return MaxpTable.Table(fontFile, tagBytes, checksum, offset, length)
     else:
