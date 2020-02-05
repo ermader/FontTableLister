@@ -45,4 +45,4 @@ class NameTable(FontTable.Table):
         self.getNameRecords()
 
         for nameRecord in self.nameRecords:
-            print(f"{nameRecord.platformName()} {nameRecord.encodingName()} {nameRecord.languageName()} {nameRecord.nameIDName()}")
+            print(f"      {nameRecord.platformName():10} {nameRecord.encodingName():20} {nameRecord.languageName():20} {nameRecord.nameIDName():25}")
