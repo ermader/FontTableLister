@@ -30,12 +30,14 @@ class NameTable(FontTable.Table):
             rawBytes = self.rawData()
             self.format, self.count, self.stringOffset = struct.unpack(self.NAME_TABLE_HEADER_FORMAT, rawBytes[:self.NAME_TABLE_HEADER_LENGTH])
 
+            self.stringBytes = rawBytes[self.stringOffset:]
+
             self.nameRecords = []
             nameRecordOffset = self.NAME_TABLE_HEADER_LENGTH
 
             for _ in range(self.count):
                 rawNameRecord = rawBytes[nameRecordOffset : nameRecordOffset + NameRecordFactory.NAME_RECORD_LENGTH]
-                self.nameRecords.append(NameRecordFactory.nameRecordFactory(rawNameRecord))
+                self.nameRecords.append(NameRecordFactory.nameRecordFactory(rawNameRecord, self.stringBytes))
                 nameRecordOffset += NameRecordFactory.NAME_RECORD_LENGTH
 
 
@@ -45,4 +47,5 @@ class NameTable(FontTable.Table):
         self.getNameRecords()
 
         for nameRecord in self.nameRecords:
-            print(f"      {nameRecord.platformName():10} {nameRecord.encodingName():20} {nameRecord.languageName():20} {nameRecord.nameIDName():25}")
+            str = nameRecord.getString().replace("\r", "\\r").replace("\n", "\\n")
+            print(f"      {nameRecord.platformName():10} {nameRecord.encodingName():20} {nameRecord.languageName():20} {nameRecord.nameIDName():25} {str}")

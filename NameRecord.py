@@ -40,13 +40,14 @@ class NameRecord:
     NAME_ID_COMPATIBLE_FULL_NAME = 18
     NAME_ID_SAMPLE_TEXT = 19
 
-    def __init__(self, platformID, encodingID, languageID, nameID, length, offset):
+    def __init__(self, platformID, encodingID, languageID, nameID, length, offset, stringBytes):
         self.platformID = platformID
         self.encodingID = encodingID
         self.languageID = languageID
         self.nameID = nameID
         self.length = length
         self.offset = offset
+        self.stringBytes = stringBytes
 
         self.nameIDNames = {
             self.NAME_ID_COMYRIGHT_NOTICE : "Copyright",
@@ -101,3 +102,16 @@ class NameRecord:
 
         return f"Name {self.nameID:d}"
 
+    def getStringEncoding(self):
+        return None
+
+    def getString(self):
+        encoding = self.getStringEncoding()
+
+        if encoding is not None:
+            startByte = self.offset
+            endByte = startByte + self.length
+
+            return self.stringBytes[startByte:endByte].decode(encoding)
+
+        return "(can't decode this string)"

@@ -90,8 +90,8 @@ class MacintoshNameRecord(NameRecord.NameRecord):
     LANGUAGE_ID_CATALAN = 130
     # and a bunch more...
 
-    def __init__(self, platformID, encodingID, languageID, nameID, length, offset):
-        NameRecord.NameRecord.__init__(self, platformID, encodingID, languageID, nameID, length, offset)
+    def __init__(self, platformID, encodingID, languageID, nameID, length, offset, stringBytes):
+        NameRecord.NameRecord.__init__(self, platformID, encodingID, languageID, nameID, length, offset, stringBytes)
 
         self.encodingNames = {
             self.ENCODING_ID_ROMAN : "Roman",
@@ -126,6 +126,44 @@ class MacintoshNameRecord(NameRecord.NameRecord):
             self.ENCODING_ID_SLAVIC : "Slavic",
             self.ENCODING_ID_VIETNAMESE : "Vietnamese",
             self.ENCODING_ID_SINDHI : "Sindhi"
+        }
+
+        #
+        # Many of these don't seem to have Python codecs...
+        #
+        self.stringEncodings = {
+            self.ENCODING_ID_ROMAN: "*",
+            self.ENCODING_ID_JAPANESE: "shift_jis", # MacJapanese is actually a superset of SHIFT-JIS
+            self.ENCODING_ID_CHINESE_TRADITIONAL: "Chinese (Traditional)",
+            self.ENCODING_ID_KOREAN: "euc_kr", # MacKoran is acutally a superset of EUC-KR
+            self.ENCODING_ID_ARABIC: "Arabic",
+            self.ENCODING_ID_HEBREW: "Hebrew",
+            self.ENCODING_ID_GREEK: "mac_greek",
+            self.ENCODING_ID_RUSSIAN: "mac_cyrillic",
+            self.ENCODING_ID_RSYMBOL: "koi8_r", # not sure about this...
+            self.ENCODING_ID_DEVANAGARI: "Devanagari",
+            self.ENCODING_ID_GURMUKHI: "Gurmukhi",
+            self.ENCODING_ID_GUJARATI: "Gujarati",
+            self.ENCODING_ID_ORIYA: "Oriya",
+            self.ENCODING_ID_BENGALI: "Bengali",
+            self.ENCODING_ID_TAMIL: "Tamil",
+            self.ENCODING_ID_TELEGU: "Telegu",
+            self.ENCODING_ID_KANNADA: "Kannada",
+            self.ENCODING_ID_MALAYALAM: "Malayalam",
+            self.ENCODING_ID_SINHALESE: "Sinhalese",
+            self.ENCODING_ID_BURMESE: "Burmese",
+            self.ENCODING_ID_KHMER: "Khmer",
+            self.ENCODING_ID_THAI: "Thai",
+            self.ENCODING_ID_LAO: "Lao",
+            self.ENCODING_ID_GEORGIAN: "Georgian",
+            self.ENCODING_ID_ARMENIAN: "Armenian",
+            self.ENCODING_ID_CHINESE_SIMPLIFIED: "Chinese (Simplified)",
+            self.ENCODING_ID_TIBETAN: "Tibetan",
+            self.ENCODING_ID_MONGOLIAN: "Mongolian",
+            self.ENCODING_ID_GEEZ: "Geez",
+            self.ENCODING_ID_SLAVIC: "Slavic",
+            self.ENCODING_ID_VIETNAMESE: "Vietnamese",
+            self.ENCODING_ID_SINDHI: "Sindhi"
         }
 
         self.languageNames = {
@@ -181,3 +219,6 @@ class MacintoshNameRecord(NameRecord.NameRecord):
 
     def platformName(self):
         return "Macintosh"
+
+    def getStringEncoding(self):
+        return "mac_roman" # A good default for the cases I'm seeing

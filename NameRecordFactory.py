@@ -20,15 +20,15 @@ PLATFORM_ID_CUSTOM = 4
 NAME_RECORD_FORMAT = ">HHHHHH"
 NAME_RECORD_LENGTH = struct.calcsize(NAME_RECORD_FORMAT)
 
-def nameRecordFactory(rawNameRecord):
+def nameRecordFactory(rawNameRecord, stringBytes):
     platformID, encodingID, languageID, nameID, length, offset = struct.unpack(
         NAME_RECORD_FORMAT, rawNameRecord)
 
     if platformID == PLATFORM_ID_UNICODE:
-        return UnicodeNameRecord.UnicodeNameRecord(platformID, encodingID, languageID, nameID, length, offset)
+        return UnicodeNameRecord.UnicodeNameRecord(platformID, encodingID, languageID, nameID, length, offset, stringBytes)
     elif platformID == PLATFORM_ID_MACINTOSH:
-        return MacintoshNameRecord.MacintoshNameRecord(platformID, encodingID, languageID, nameID, length, offset)
+        return MacintoshNameRecord.MacintoshNameRecord(platformID, encodingID, languageID, nameID, length, offset, stringBytes)
     elif platformID == PLATFORM_ID_WINDOWS:
-        return WindowsNameRecord.WindowsNameRecord(platformID, encodingID, languageID, nameID, length, offset)
+        return WindowsNameRecord.WindowsNameRecord(platformID, encodingID, languageID, nameID, length, offset, stringBytes)
     else:
-        return NameRecord.NameRecord(platformID, encodingID, languageID, nameID, length, offset)
+        return NameRecord.NameRecord(platformID, encodingID, languageID, nameID, length, offset, stringBytes)

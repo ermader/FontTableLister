@@ -79,8 +79,8 @@ class WindowsNameRecord(NameRecord.NameRecord):
     LANGUAGE_ID_TURKISH = 0x041F
     LANGUAGE_ID_VIETNAMESE = 0x042A
 
-    def __init__(self, platformID, encodingID, languageID, nameID, length, offset):
-        NameRecord.NameRecord.__init__(self, platformID, encodingID, languageID, nameID, length, offset)
+    def __init__(self, platformID, encodingID, languageID, nameID, length, offset, stringBytes):
+        NameRecord.NameRecord.__init__(self, platformID, encodingID, languageID, nameID, length, offset, stringBytes)
 
         self.encodingNames = {
             self.ENCODING_ID_SYMBOL : "Symbol",
@@ -91,6 +91,17 @@ class WindowsNameRecord(NameRecord.NameRecord):
             self.ENCODING_ID_WANSUNG : "Wansung",
             self.ENCODING_ID_JOHAB : "Johab",
             self.ENCODING_ID_UNICODE_UCS4 : "Unicode UCS4"
+        }
+
+        self.stringEncodings = {
+            self.ENCODING_ID_SYMBOL: "utf_16_be", # really?
+            self.ENCODING_ID_UNICODE_BMP: "utf_16_be",
+            self.ENCODING_ID_SHIFT_JIS: "Shift_jis",
+            self.ENCODING_ID_PRC: "gb2312",
+            self.ENCODING_ID_BIG_5: "big5",
+            self.ENCODING_ID_WANSUNG: "cp949",
+            self.ENCODING_ID_JOHAB: "johab",
+            self.ENCODING_ID_UNICODE_UCS4: "utf_32_be"
         }
 
         self.languageNames = {
@@ -156,3 +167,6 @@ class WindowsNameRecord(NameRecord.NameRecord):
 
     def platformName(self):
         return "Windows"
+
+    def getStringEncoding(self):
+        return self.stringEncodings.get(self.encodingID)
