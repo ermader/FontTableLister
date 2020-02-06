@@ -28,7 +28,7 @@ class NameTable(FontTable.Table):
     def getNameRecords(self):
         if self.nameRecords == None:
             rawBytes = self.rawData()
-            self.format, self.count, self.stringOffset = struct.unpack(self.NAME_TABLE_HEADER_FORMAT, rawBytes[:self.NAME_TABLE_HEADER_LENGTH])
+            self.nameTableFormat, self.count, self.stringOffset = struct.unpack(self.NAME_TABLE_HEADER_FORMAT, rawBytes[:self.NAME_TABLE_HEADER_LENGTH])
 
             self.stringBytes = rawBytes[self.stringOffset:]
 
@@ -42,6 +42,14 @@ class NameTable(FontTable.Table):
 
 
         return self.nameRecords
+
+    def findName(self, platformID, nameID, languageID):
+        self.getNameRecords()
+        for nameRecord in self.nameRecords:
+            if nameRecord.platformID == platformID and nameRecord.nameID == nameID and nameRecord.languageID == languageID:
+                return nameRecord.getString()
+
+        return None
 
     def format(self):
         self.getNameRecords()

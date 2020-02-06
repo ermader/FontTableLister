@@ -65,4 +65,6 @@ class Font(object):
                 return table
 
         return None
-
+    def getPostscriptName(self):
+        nameTable = self.getTable('name')
+        return nameTable.findName(1, 6, 0) # Hey! Need symbolic names for these, plus multiple queries...

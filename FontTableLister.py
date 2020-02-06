@@ -30,7 +30,7 @@ fontIndex = min(len(fontFile.fonts) - 1, arguments.index)
 fontObject = fontFile.fonts[fontIndex]
 
 if arguments.list:
-    print(f"  Font {fontIndex:d} contains {len(fontObject.tables):d} tables:")
+    print(f"  {fontObject.getPostscriptName()} contains {len(fontObject.tables):d} tables:")
     
     for table in fontObject.tables:
         print(f"    '{table.tag}' 0x{table.checksum:08X} 0x{table.offset:08X} {table.length:10,d}")

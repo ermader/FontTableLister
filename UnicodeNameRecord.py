@@ -47,4 +47,4 @@ class UnicodeNameRecord(NameRecord.NameRecord):
         return "Unicode"
 
     def getStringEncoding(self):
-        return self.stringEncodings.get(self.encodingID_)
+        return self.stringEncodings.get(self.encodingID)
