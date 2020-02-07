@@ -45,10 +45,10 @@ if arguments.psname:
             break
         index += 1
 
-    if fontIndex is None:
-        print(f"  {fileName} does not contain a font named {arguments.psname}")
-
 if fontIndex is None:
+    if arguments.psname:
+        print(f"{fileName} does not contain a font named {arguments.psname}\n")
+
     fontIndex = min(len(fontFile.fonts) - 1, arguments.index)
 
 fontObject = fontFile.fonts[fontIndex]
