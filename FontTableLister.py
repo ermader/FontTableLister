@@ -13,6 +13,7 @@ import FontFile
 parser = argparse.ArgumentParser(prog="FontTableLister")
 
 parser.add_argument("file", type=argparse.FileType("rb"), help="the font file to examine")
+parser.add_argument("-c", "--contents", action="store_true", help="List all fonts in the file")
 parser.add_argument("-i", "--index", type=int, default=0, metavar="font_index", help="the subfont to examine. (default = %(default)s)")
 parser.add_argument("-d", "--dump", action="append", metavar="table", help="hex dump the table")
 parser.add_argument("-f", "--format", action="append", metavar="table", help="show the formatted table")
@@ -25,6 +26,15 @@ fileName = fileObject.name.split(os.sep)[-1:][0] # [-1:] gives a list with 1 str
 
 print(f"{fileName}:")
 fontFile = FontFile.File(fileObject)
+
+if arguments.contents:
+    print(f"  Fonts in {fileName}:")
+    index = 0
+    for fontObject in fontFile.fonts:
+        print(f"    {index:2d}: {fontObject.getPostscriptName()}")
+        index += 1
+
+    print()
 
 fontIndex = min(len(fontFile.fonts) - 1, arguments.index)
 fontObject = fontFile.fonts[fontIndex]
