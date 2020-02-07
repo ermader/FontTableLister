@@ -271,7 +271,7 @@ class MacintoshNameRecord(NameRecord.NameRecord):
         return "Macintosh"
 
     def getStringEncoding(self):
-        if self.encodingID == self.ENCODING_ID_JAPANESE:
+        if self.encodingID == self.ENCODING_ID_ROMAN:
             encoding = self.languageEncodings.get(self.languageID)
         else:
             encoding = self.stringEncodings.get(self.encodingID)
