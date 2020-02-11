@@ -21,6 +21,20 @@ class File(object):
         else:
             self.fonts.append(Font(self.fontFile))
 
+    def getPostscriptNames(self):
+        names = []
+
+        for fontObject in self.fonts:
+            names.append(fontObject.getPostscriptName())
+
+        return names
+
+    def fontWithPostscriptName(self, psname):
+        for fontObject in self.fonts:
+            if fontObject.getPostscriptName() == psname:
+                return fontObject
+
+        return None
 
 class Collection(object):
     FONT_COLLECTION_HEADER_FORMAT = ">4sHHI"

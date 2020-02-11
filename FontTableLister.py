@@ -29,17 +29,16 @@ fontFile = FontFile.File(fileObject)
 if arguments.contents:
     print(f"  Fonts in {fileName}:")
     index = 0
-    for fontObject in fontFile.fonts:
-        print(f"    {index:2d}: {fontObject.getPostscriptName()}")
+    for psname in fontFile.getPostscriptNames():
+        print(f"    {index:2d}: {psname}")
         index += 1
 
     print()
 
 if arguments.psname:
-    for fontObject in fontFile.fonts:
-        if fontObject.getPostscriptName() == arguments.psname:
-            break
-    else:
+    fontObject = fontFile.fontWithPostscriptName(arguments.psname)
+
+    if fontObject is None:
         print(f"{fileName} does not contain a font named {arguments.psname}")
         sys.exit(1)
 
