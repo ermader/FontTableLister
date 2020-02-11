@@ -14,7 +14,6 @@ parser = argparse.ArgumentParser(prog="FontTableLister")
 
 parser.add_argument("file", type=argparse.FileType("rb"), help="the font file to examine")
 parser.add_argument("-c", "--contents", action="store_true", help="List all fonts in the file")
-parser.add_argument("-i", "--index", type=int, default=0, metavar="font_index", help="the subfont to examine. (default = %(default)s)")
 parser.add_argument("-p", "--psname", metavar="postscript_name", help="postscript name of the font to examine")
 parser.add_argument("-d", "--dump", action="append", metavar="table", help="hex dump the table")
 parser.add_argument("-f", "--format", action="append", metavar="table", help="show the formatted table")
@@ -36,22 +35,16 @@ if arguments.contents:
 
     print()
 
-fontIndex = None
 if arguments.psname:
-    index = 0
     for fontObject in fontFile.fonts:
         if fontObject.getPostscriptName() == arguments.psname:
-            fontIndex = index
             break
-        index += 1
+    else:
+        print(f"{fileName} does not contain a font named {arguments.psname}")
+        sys.exit(1)
 
-if fontIndex is None:
-    if arguments.psname:
-        print(f"{fileName} does not contain a font named {arguments.psname}\n")
-
-    fontIndex = min(len(fontFile.fonts) - 1, arguments.index)
-
-fontObject = fontFile.fonts[fontIndex]
+else:
+    fontObject = fontFile.fonts[0]
 
 print(f"{fileName}/{fontObject.getPostscriptName()}:")
 
