@@ -125,7 +125,7 @@ class WindowsNameRecord(NameRecord.NameRecord):
             self.LANGUAGE_ID_CATALAN : "Catalan",
             self.LANGUAGE_ID_CHINESE_HONG_KONG : "Chinese (Hong Kong)",
             self.LANGUAGE_ID_CHINESE_MACAO : "Chinese (Macao)",
-            self.LANGUAGE_ID_CHINESE_PRC : "Chinses (PRC)",
+            self.LANGUAGE_ID_CHINESE_PRC : "Chinese (PRC)",
             self.LANGUAGE_ID_CHINESE_TAIWAN : "Chinese (Taiwan)",
             self.LANGUAGE_ID_CROATION_CORATIA : "Croation",
             self.LANGUAGE_ID_CROATION_LATIN : "Croation (Latin)",
