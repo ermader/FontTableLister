@@ -42,8 +42,8 @@ class WindowsNameRecord(NameRecord.NameRecord):
     LANGUAGE_ID_CHINESE_PRC = 0x0804
     LANGUAGE_ID_CHINESE_SINGAPORE = 0x1004
     LANGUAGE_ID_CHINESE_TAIWAN = 0x0404
-    LANGUAGE_ID_CROATION_CORATIA = 0x041A
-    LANGUAGE_ID_CROATION_LATIN = 0x101A
+    LANGUAGE_ID_CROATIAN_CORATIA = 0x041A
+    LANGUAGE_ID_CROATIAN_LATIN = 0x101A
     LANGUAGE_ID_CZECH = 0x0405
     LANGUAGE_ID_DANISH_DENMARK = 0x0406
     LANGUAGE_ID_DUTCH_BELGUIM = 0x0813
@@ -127,8 +127,8 @@ class WindowsNameRecord(NameRecord.NameRecord):
             self.LANGUAGE_ID_CHINESE_MACAO : "Chinese (Macao)",
             self.LANGUAGE_ID_CHINESE_PRC : "Chinese (PRC)",
             self.LANGUAGE_ID_CHINESE_TAIWAN : "Chinese (Taiwan)",
-            self.LANGUAGE_ID_CROATION_CORATIA : "Croation",
-            self.LANGUAGE_ID_CROATION_LATIN : "Croation (Latin)",
+            self.LANGUAGE_ID_CROATIAN_CORATIA : "Croatian",
+            self.LANGUAGE_ID_CROATIAN_LATIN : "Croatian (Latin)",
             self.LANGUAGE_ID_CZECH : "Czech",
             self.LANGUAGE_ID_DANISH_DENMARK : "Danish",
             self.LANGUAGE_ID_DUTCH_BELGUIM : "Dutch (Belguim)",
