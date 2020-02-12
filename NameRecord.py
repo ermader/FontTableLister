@@ -48,6 +48,7 @@ class NameRecord:
         self.length = length
         self.offset = offset
         self.stringBytes = stringBytes
+        self.decodedString = None
 
         self.nameIDNames = {
             self.NAME_ID_COMYRIGHT_NOTICE : "Copyright",
@@ -105,7 +106,7 @@ class NameRecord:
     def getStringEncoding(self):
         return None
 
-    def getString(self):
+    def decodeString(self):
         encoding = self.getStringEncoding()
 
         if encoding is not None:
@@ -115,3 +116,9 @@ class NameRecord:
             return self.stringBytes[startByte:endByte].decode(encoding)
 
         return "(can't decode this string)"
+
+    def getString(self):
+        if self.decodedString is None:
+            self.decodedString = self.decodeString()
+
+        return self.decodedString
