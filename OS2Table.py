@@ -159,5 +159,26 @@ class OS2Table(FontTable.Table):
         FontTable.formatLine("Typographic Line Gap", utility.formatDecimal(sTypoLineGap))
         FontTable.formatLine("Windows Ascent", utility.formatDecimal(usWinAscent))
         FontTable.formatLine("Windows Descent", utility.formatDecimal(usWinDescent))
-        
+
+        if version >= 1:
+            formatStart = formatEnd
+            formatEnd += self.OS2_TABLE_FORMAT_1_LENGTH
+
+            ucpRange1High, ucpRange1Low, ucpRange2High, ucpRange2Low = struct.unpack(self.OS2_TABLE_FORMAT_1, rawTable[formatStart:formatEnd])
+
+            FontTable.formatLine("Code Page Range 1", utility.formatHex32(utility.swapLongInt(ucpRange1High, ucpRange1Low)))
+            FontTable.formatLine("Code Page Range 2", utility.formatHex32(utility.swapLongInt(ucpRange2High, ucpRange2Low)))
+
+        if version >= 2:
+            formatStart = formatEnd
+            formatEnd += self.OS2_TABLE_FORMAT_2_LENGTH
+
+            sxHeight, sCapHeight, usDefaultChar, usBreakChar, usMaxContext = struct.unpack(self.OS2_TABLE_FORMAT_2, rawTable[formatStart:formatEnd])
+
+            FontTable.formatLine("x Height", utility.formatDecimal(sxHeight))
+            FontTable.formatLine("Cap Height", utility.formatDecimal(sCapHeight))
+            FontTable.formatLine("Default Char", utility.formatHex16(usDefaultChar))
+            FontTable.formatLine("Break Char", utility.formatHex16(usBreakChar))
+            FontTable.formatLine("Max Context", utility.formatDecimal(usMaxContext))
+            
         print()
