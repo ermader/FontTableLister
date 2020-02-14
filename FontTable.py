@@ -36,7 +36,8 @@ class Table(object):
     def rawData(self):
         if self.rawBytes == None:
             self.fontFile.seek(self.offset)
-            self.rawBytes = self.fontFile.read(self.length)
+            dataLength = (self.length + 1) & 0xFFFFFFFE
+            self.rawBytes = self.fontFile.read(dataLength)
         return self.rawBytes
 
     def dump(self):
