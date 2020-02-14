@@ -14,23 +14,32 @@ def formatLongDateTime(ldt):
     # return dateTime.strftime("%A, %B %_d %Y %I:%M:%S %p %Z")
     return dateTime.strftime("%b %_d %Y %I:%M:%S %p %Z")
 
+def formatHex8(value, withPrefix=True):
+    if withPrefix:
+        return f"0x{value:02X}"
+
+    return f"{value:02X}"
+
 def formatHex16(value, withPrefix=True):
     if withPrefix:
         return f"0x{value:04X}"
-    else:
-        return f"{value:04X}"
+
+    return f"{value:04X}"
 
 def formatHex32(value, withPrefix=True):
     if withPrefix:
         return f"0x{value:08X}"
-    else:
-        return f"{value:08X}"
+
+    return f"{value:08X}"
 
 def formatDecimal(value):
     return f"{value:d}"
 
 def formatFixed(fixed):
     return f"{floatFromFixed(fixed):.3f}"
+
+def swapLongInt(highWord, lowWord):
+    return (highWord << 16) | lowWord
 
 def swapLongDateTime(highWord, lowWord):
     return (highWord << 32) | lowWord
