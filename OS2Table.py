@@ -180,5 +180,14 @@ class OS2Table(FontTable.Table):
             FontTable.formatLine("Default Char", utility.formatHex16(usDefaultChar))
             FontTable.formatLine("Break Char", utility.formatHex16(usBreakChar))
             FontTable.formatLine("Max Context", utility.formatDecimal(usMaxContext))
+
+        if version >= 5:
+            formatStart = formatEnd
+            formatEnd += self.OS2_TABLE_FORMAT_5_LENGTH
+
+            usLowerOpticalPointSize, usUpperOpticalPointSize = struct.unpack(self.OS2_TABLE_FORMAT_5, rawTable[formatStart:formatEnd])
+
+            FontTable.formatLine("Lower Optical Point Size", utility.formatDecimal(usLowerOpticalPointSize))
+            FontTable.formatLine("Upper Optical Point Size", utility.formatDecimal(usUpperOpticalPointSize))
             
         print()
