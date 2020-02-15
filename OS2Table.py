@@ -189,5 +189,5 @@ class OS2Table(FontTable.Table):
 
             FontTable.formatLine("Lower Optical Point Size", utility.formatDecimal(usLowerOpticalPointSize))
             FontTable.formatLine("Upper Optical Point Size", utility.formatDecimal(usUpperOpticalPointSize))
-            
+
         print()
