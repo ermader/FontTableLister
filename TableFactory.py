@@ -12,6 +12,7 @@ import NameTable
 import MaxpTable
 import VheaTable
 import OS2Table
+import PostTable
 
 FONT_DIRECTORY_ENTRY_FORMAT = ">4sIII"
 FONT_DIRECTORY_ENTRY_LENGTH = struct.calcsize(FONT_DIRECTORY_ENTRY_FORMAT)
@@ -30,6 +31,8 @@ def tableFactory(fontFile):
         return MaxpTable.Table(fontFile, tagBytes, checksum, offset, length)
     elif tagBytes == b'OS/2':
         return OS2Table.OS2Table(fontFile, tagBytes, checksum, offset, length)
+    elif tagBytes == b'post':
+        return PostTable.Table(fontFile, tagBytes, checksum, offset, length)
     elif tagBytes == b'vhea':
         return VheaTable.Table(fontFile, tagBytes, checksum, offset, length)
     else:
