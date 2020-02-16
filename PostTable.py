@@ -8,6 +8,7 @@ import struct
 import utility
 
 import FontTable
+from StandardGlyphNames import standardGlyphNames
 
 # typedef struct {
 #     Fixed version;
@@ -33,6 +34,14 @@ class Table(FontTable.Table):
 
     POST_STRING_TABLE_FORMAT = ">H"  # only numGlyphs...
     POST_STRING_TABLE_FORMAT_LENGTH = struct.calcsize(POST_STRING_TABLE_FORMAT)
+
+    def getGlyphName(self, glyphID):
+        standardGlyphCount = len(standardGlyphNames)
+
+        if glyphID < standardGlyphCount:
+            return standardGlyphNames[glyphID]
+
+        return self.names[glyphID - standardGlyphCount]
 
     def format(self):
         rawTable = self.rawData()
@@ -62,6 +71,7 @@ class Table(FontTable.Table):
 
             nameIndexTable = struct.unpack(nameIndexTableFormat, rawTable[nameIndexTableStart:nameIndexTableEnd])
 
+            self.names = []
             stringBytes = rawTable[nameIndexTableEnd:]
             byteIndex = 0
             while byteIndex < len(stringBytes):
@@ -72,7 +82,12 @@ class Table(FontTable.Table):
 
                 strStart = byteIndex + 1
                 strEnd = strStart + strLen
-                print(stringBytes[strStart:strEnd].decode("latin_1"))
+                self.names.append(stringBytes[strStart:strEnd].decode("latin_1"))
 
                 byteIndex = strEnd
+
+            for glyphID in range(0, numGlyphs):
+                nameIndex = nameIndexTable[glyphID]
+                print(f"{glyphID:>6d} {nameIndex:>6d}    {self.getGlyphName(nameIndex)}")
+
         print()
