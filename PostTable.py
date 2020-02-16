@@ -31,6 +31,9 @@ class Table(FontTable.Table):
     POST_TABLE_HEADER_FORMAT = ">iihhIIIII"
     POST_TABLE_HEADER_LENGTH = struct.calcsize(POST_TABLE_HEADER_FORMAT)
 
+    POST_STRING_TABLE_FORMAT = ">H"  # only numGlyphs...
+    POST_STRING_TABLE_FORMAT_LENGTH = struct.calcsize(POST_STRING_TABLE_FORMAT)
+
     def format(self):
         rawTable = self.rawData()
 
@@ -43,8 +46,33 @@ class Table(FontTable.Table):
         FontTable.formatLine("Underline Thickness", utility.formatDecimal(underlineThickness))
         FontTable.formatLine("isFixedPitch", f"{isFixedPitch != 0}")
         FontTable.formatLine("Min Memory Type42", utility.formatDecimal(minMemType42))
-        FontTable.formatLine("Max Memory Type43", utility.formatDecimal(maxMemType42))
+        FontTable.formatLine("Max Memory Type42", utility.formatDecimal(maxMemType42))
         FontTable.formatLine("Min Memory Type1", utility.formatDecimal(minMemType1))
         FontTable.formatLine("Max Memory Type1", utility.formatDecimal(maxMemType1))
 
+        if utility.floatFromFixed(version) == 2.0:
+            stringTableStart = self.POST_TABLE_HEADER_LENGTH
+            stringTableEnd = stringTableStart + self.POST_STRING_TABLE_FORMAT_LENGTH
+            numGlyphs, = struct.unpack(self.POST_STRING_TABLE_FORMAT, rawTable[stringTableStart:stringTableEnd])
+
+            nameIndexTableFormat = f">{numGlyphs:d}H"
+            nameIndexTableStart = stringTableEnd
+            nameIndexTableLength = struct.calcsize(nameIndexTableFormat)
+            nameIndexTableEnd = nameIndexTableStart + nameIndexTableLength
+
+            nameIndexTable = struct.unpack(nameIndexTableFormat, rawTable[nameIndexTableStart:nameIndexTableEnd])
+
+            stringBytes = rawTable[nameIndexTableEnd:]
+            byteIndex = 0
+            while byteIndex < len(stringBytes):
+                strLen = stringBytes[byteIndex]
+
+                if strLen == 0:
+                    break
+
+                strStart = byteIndex + 1
+                strEnd = strStart + strLen
+                print(stringBytes[strStart:strEnd].decode("latin_1"))
+
+                byteIndex = strEnd
         print()
