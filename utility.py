@@ -35,8 +35,11 @@ def formatHex32(value, withPrefix=True):
 def formatDecimal(value):
     return f"{value:d}"
 
+def formatFloat3(float):
+    return f"{float:.3f}"
+
 def formatFixed(fixed):
-    return f"{floatFromFixed(fixed):.3f}"
+    return formatFloat3(floatFromFixed(fixed))
 
 def swapLongInt(highWord, lowWord):
     return (highWord << 16) | lowWord

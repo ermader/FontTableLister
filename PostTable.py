@@ -35,41 +35,33 @@ class Table(FontTable.Table):
     POST_STRING_TABLE_FORMAT = ">H"  # only numGlyphs...
     POST_STRING_TABLE_FORMAT_LENGTH = struct.calcsize(POST_STRING_TABLE_FORMAT)
 
-    def getGlyphName(self, glyphID):
-        standardGlyphCount = len(standardGlyphNames)
+    def __init__(self, fontFile, tagBytes, checksum, offset, length):
+        FontTable.Table.__init__(self, fontFile, tagBytes, checksum, offset, length)
 
-        if glyphID < standardGlyphCount:
-            return standardGlyphNames[glyphID]
-
-        return self.names[glyphID - standardGlyphCount]
-
-    def format(self):
         rawTable = self.rawData()
 
-        version, italicAngle, underlinePosition, underlineThickness, isFixedPitch, \
-        minMemType42, maxMemType42, minMemType1, maxMemType1 = struct.unpack(self.POST_TABLE_HEADER_FORMAT, rawTable[:self.POST_TABLE_HEADER_LENGTH])
+        fixedVersion, fixedIitalicAngle, self.underlinePosition, self.underlineThickness, fixedPitch, \
+        self.minMemType42, self.maxMemType42, self.minMemType1, self.maxMemType1 = \
+            struct.unpack(self.POST_TABLE_HEADER_FORMAT, rawTable[:self.POST_TABLE_HEADER_LENGTH])
 
-        FontTable.formatLine("Version", utility.formatFixed(version))
-        FontTable.formatLine("Italic Angle", utility.formatFixed(italicAngle))
-        FontTable.formatLine("Underline Position", utility.formatDecimal(underlinePosition))
-        FontTable.formatLine("Underline Thickness", utility.formatDecimal(underlineThickness))
-        FontTable.formatLine("isFixedPitch", f"{isFixedPitch != 0}")
-        FontTable.formatLine("Min Memory Type42", utility.formatDecimal(minMemType42))
-        FontTable.formatLine("Max Memory Type42", utility.formatDecimal(maxMemType42))
-        FontTable.formatLine("Min Memory Type1", utility.formatDecimal(minMemType1))
-        FontTable.formatLine("Max Memory Type1", utility.formatDecimal(maxMemType1))
+        self.version = utility.floatFromFixed(fixedVersion)
+        self.italicAngle = utility.floatFromFixed(fixedIitalicAngle)
+        self.isFixedPitch = fixedPitch != 0
+        self.numGlyphs = None
+        self.nameIndexTable = None
+        self.names = None
 
-        if utility.floatFromFixed(version) == 2.0:
+        if self.version == 2.0:
             stringTableStart = self.POST_TABLE_HEADER_LENGTH
             stringTableEnd = stringTableStart + self.POST_STRING_TABLE_FORMAT_LENGTH
-            numGlyphs, = struct.unpack(self.POST_STRING_TABLE_FORMAT, rawTable[stringTableStart:stringTableEnd])
+            self.numGlyphs, = struct.unpack(self.POST_STRING_TABLE_FORMAT, rawTable[stringTableStart:stringTableEnd])
 
-            nameIndexTableFormat = f">{numGlyphs:d}H"
+            nameIndexTableFormat = f">{self.numGlyphs:d}H"
             nameIndexTableStart = stringTableEnd
             nameIndexTableLength = struct.calcsize(nameIndexTableFormat)
             nameIndexTableEnd = nameIndexTableStart + nameIndexTableLength
 
-            nameIndexTable = struct.unpack(nameIndexTableFormat, rawTable[nameIndexTableStart:nameIndexTableEnd])
+            self.nameIndexTable = struct.unpack(nameIndexTableFormat, rawTable[nameIndexTableStart:nameIndexTableEnd])
 
             self.names = []
             stringBytes = rawTable[nameIndexTableEnd:]
@@ -86,8 +78,30 @@ class Table(FontTable.Table):
 
                 byteIndex = strEnd
 
-            for glyphID in range(0, numGlyphs):
-                nameIndex = nameIndexTable[glyphID]
-                print(f"{glyphID:>6d} {nameIndex:>6d}    {self.getGlyphName(nameIndex)}")
+
+
+    def getGlyphName(self, glyphID):
+        standardGlyphCount = len(standardGlyphNames)
+
+        if glyphID < standardGlyphCount:
+            return standardGlyphNames[glyphID]
+
+        return self.names[glyphID - standardGlyphCount]
+
+    def format(self):
+        FontTable.formatLine("Version", utility.formatFloat3(self.version))
+        FontTable.formatLine("Italic Angle", utility.formatFloat3(self.italicAngle))
+        FontTable.formatLine("Underline Position", utility.formatDecimal(self.underlinePosition))
+        FontTable.formatLine("Underline Thickness", utility.formatDecimal(self.underlineThickness))
+        FontTable.formatLine("isFixedPitch", f"{self.isFixedPitch}")
+        FontTable.formatLine("Min Memory Type42", utility.formatDecimal(self.minMemType42))
+        FontTable.formatLine("Max Memory Type42", utility.formatDecimal(self.maxMemType42))
+        FontTable.formatLine("Min Memory Type1", utility.formatDecimal(self.minMemType1))
+        FontTable.formatLine("Max Memory Type1", utility.formatDecimal(self.maxMemType1))
+
+        if self.version == 2.0:
+           for glyphID in range(0, self.numGlyphs):
+                nameIndex = self.nameIndexTable[glyphID]
+                print(f"      {glyphID:>6d} {nameIndex:>6d}    {self.getGlyphName(nameIndex)}")
 
         print()

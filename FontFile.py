@@ -85,7 +85,7 @@ class Font(object):
             tagBytes, checksum, offset, length = struct.unpack(self.FONT_DIRECTORY_ENTRY_FORMAT, rawDirectoryEntries[entryStart:entryEnd])
 
             self.tables.append(TableFactory.tableFactory(fontFile, tagBytes, checksum, offset, length))
-            
+
             entryStart = entryEnd
             entryEnd += self.FONT_DIRECTORY_ENTRY_LENGTH
 
