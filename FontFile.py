@@ -64,8 +64,10 @@ class Font(object):
     classdocs
     '''
     FONT_DIRECTORY_HEADER_FORMAT = ">IHHHH"
-
     FONT_DIRECTORY_HEADER_LENGTH = struct.calcsize(FONT_DIRECTORY_HEADER_FORMAT)
+
+    FONT_DIRECTORY_ENTRY_FORMAT = ">4sIII"
+    FONT_DIRECTORY_ENTRY_LENGTH = struct.calcsize(FONT_DIRECTORY_ENTRY_FORMAT)
 
     def __init__(self, fontFile, fontOffset=0):
         fontFile.seek(fontOffset)
@@ -74,8 +76,17 @@ class Font(object):
             self.FONT_DIRECTORY_HEADER_FORMAT, directoryHeaderData)
 
         self.tables = []
+        rawDirectoryEntries = fontFile.read(self.FONT_DIRECTORY_ENTRY_LENGTH * self.numTables)
+
+        entryStart = 0
+        entryEnd = entryStart + self.FONT_DIRECTORY_ENTRY_LENGTH
+
         for _ in range(self.numTables):
-            self.tables.append(TableFactory.tableFactory(fontFile))
+            tagBytes, checksum, offset, length = struct.unpack(self.FONT_DIRECTORY_ENTRY_FORMAT, rawDirectoryEntries[entryStart:entryEnd])
+
+            self.tables.append(TableFactory.tableFactory(fontFile, tagBytes, checksum, offset, length))
+            entryStart = entryEnd
+            entryEnd += self.FONT_DIRECTORY_ENTRY_LENGTH
 
     def getTable(self, tableTag):
         for table in self.tables:

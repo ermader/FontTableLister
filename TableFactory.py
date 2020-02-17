@@ -14,13 +14,7 @@ import VheaTable
 import OS2Table
 import PostTable
 
-FONT_DIRECTORY_ENTRY_FORMAT = ">4sIII"
-FONT_DIRECTORY_ENTRY_LENGTH = struct.calcsize(FONT_DIRECTORY_ENTRY_FORMAT)
-
-def tableFactory(fontFile):
-    directoryEntryData = fontFile.read(FONT_DIRECTORY_ENTRY_LENGTH)
-    tagBytes, checksum, offset, length = struct.unpack(FONT_DIRECTORY_ENTRY_FORMAT, directoryEntryData)
-
+def tableFactory(fontFile, tagBytes, checksum, offset, length):
     if tagBytes == b'head':
         return HeadTable.Table(fontFile, tagBytes, checksum, offset, length)
     elif tagBytes == b'hhea':
