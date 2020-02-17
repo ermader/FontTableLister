@@ -33,12 +33,14 @@ class NameTable(FontTable.Table):
             self.stringBytes = rawBytes[self.stringOffset:]
 
             self.nameRecords = []
-            nameRecordOffset = self.NAME_TABLE_HEADER_LENGTH
+            nameRecordStart = self.NAME_TABLE_HEADER_LENGTH
+            nameRecordEnd = nameRecordStart + NameRecordFactory.NAME_RECORD_LENGTH
 
             for _ in range(self.count):
-                rawNameRecord = rawBytes[nameRecordOffset : nameRecordOffset + NameRecordFactory.NAME_RECORD_LENGTH]
+                rawNameRecord = rawBytes[nameRecordStart:nameRecordEnd]
                 self.nameRecords.append(NameRecordFactory.nameRecordFactory(rawNameRecord, self.stringBytes))
-                nameRecordOffset += NameRecordFactory.NAME_RECORD_LENGTH
+                nameRecordStart = nameRecordEnd
+                nameRecordEnd += NameRecordFactory.NAME_RECORD_LENGTH
 
 
         return self.nameRecords
