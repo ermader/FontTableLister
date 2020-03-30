@@ -3,7 +3,6 @@ Created on Jan 26, 2020
 
 @author: emader
 '''
-import struct
 
 import FontTable
 import HeadTable
@@ -13,6 +12,8 @@ import MaxpTable
 import VheaTable
 import OS2Table
 import PostTable
+from OpenType import GSUBTable
+
 
 def tableFactory(fontFile, tagBytes, checksum, offset, length):
     if tagBytes == b'head':
@@ -29,5 +30,7 @@ def tableFactory(fontFile, tagBytes, checksum, offset, length):
         return PostTable.Table(fontFile, tagBytes, checksum, offset, length)
     elif tagBytes == b'vhea':
         return VheaTable.Table(fontFile, tagBytes, checksum, offset, length)
+    elif tagBytes == b'GSUB':
+        return GSUBTable.Table(fontFile, tagBytes, checksum, offset, length)
     else:
         return FontTable.Table(fontFile, tagBytes, checksum, offset, length)

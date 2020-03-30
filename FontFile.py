@@ -58,6 +58,7 @@ class Collection(object):
 import NameRecordFactory
 from NameRecord import NameRecord
 from MacintoshNameRecord import MacintoshNameRecord
+from WindowsNameRecord import WindowsNameRecord
 
 class Font(object):
     '''
@@ -96,6 +97,20 @@ class Font(object):
 
         return None
 
-    def getPostscriptName(self):
+    def queryName(self, nameID):
+        queries = [
+            (NameRecordFactory.PLATFORM_ID_MACINTOSH, MacintoshNameRecord.LANGUAGE_ID_ENGLISH),
+            (NameRecordFactory.PLATFORM_ID_WINDOWS, WindowsNameRecord.LANGUAGE_ID_ENGLISH_US),
+            (NameRecordFactory.PLATFORM_ID_UNICODE, 0)
+        ]
+
         nameTable = self.getTable('name')
-        return nameTable.findName(NameRecordFactory.PLATFORM_ID_MACINTOSH, NameRecord.NAME_ID_POSTSCRIPT_NAME, MacintoshNameRecord.LANGUAGE_ID_ENGLISH) # Hey! Need multiple queries...
+        for (platformID, languageID) in queries:
+            psName = nameTable.findName(platformID, nameID, languageID)
+            if psName is not None:
+                return psName
+
+        return None
+
+    def getPostscriptName(self):
+        return self.queryName(NameRecord.NAME_ID_POSTSCRIPT_NAME)
