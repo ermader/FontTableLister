@@ -23,4 +23,4 @@ class Table(FontTable.Table):
         (self.majorVersion, self.minorVersion, scriptListOffset, featureListOffset, lookupListOffset) = \
             struct.unpack(self.GSUB_TABLE_HEADER_FORMAT, rawTable[:self.GSUB_TABLE_HEADER_LENGTH])
 
-        self.scriptList = ScriptList.ScriptList(rawTable, scriptListOffset)
+        self.scriptList = ScriptList.ScriptListTable(rawTable, scriptListOffset)
