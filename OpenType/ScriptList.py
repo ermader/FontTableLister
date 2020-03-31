@@ -7,6 +7,9 @@ Created on Mar 29, 2020
 import struct
 import utility
 
+def formatLine(label, value):
+    print(f"          {label + ':':<25s}{value:>10s}")
+
 class LangSysTable:
     LANG_SYS_TABLE_FORMAT = ">HHH"
     LANG_SYS_TABLE_LENGTH = struct.calcsize(LANG_SYS_TABLE_FORMAT)
@@ -24,6 +27,14 @@ class LangSysTable:
         featureIndicesTableStart = langSysEnd
         featureIndicesTableEnd = featureIndicesTableStart + featureIndicesTableLength
         self.featureIndicesTable = struct.unpack(featureIndicesTableFormat, rawTable[featureIndicesTableStart:featureIndicesTableEnd])
+
+    def format(self):
+        print(f"        language: '{self.langSysTag}':")
+        formatLine("Lookup Order", utility.formatHex16(self.lookupOrder))
+        formatLine("Required Feature Index", utility.formatDecimal(self.requiredFeatureIndex))
+        print("          Feature Indices:")
+        for featureIndex in self.featureIndicesTable:
+            print(f"            Feature{featureIndex:02d}")
 
 class ScriptTable:
     SCRIPT_TABLE_FORMAT = ">HH"
@@ -51,6 +62,12 @@ class ScriptTable:
             langSysRecordStart = langSysRecordEnd
             langSysRecordEnd += self.LANG_SYS_RECORD_LENGTH
 
+    def format(self):
+        print(f"      script: '{self.scriptTag}':")
+        self.defaultLangSysTable.format()
+        for langSysTable in self.langSysTables:
+            langSysTable.format()
+
 class ScriptListTable:
     SCRIPT_LIST_TABLE_FORMAT = ">H"
     SCRIPT_LIST_TABLE_LENGTH = struct.calcsize(SCRIPT_LIST_TABLE_FORMAT)
@@ -71,3 +88,8 @@ class ScriptListTable:
             self.scriptTables.append(ScriptTable(rawTable, scriptTag, scriptListOffset+scriptOffset))
             scriptRecordStart = scriptRecordEnd
             scriptRecordEnd += self.SCRIPT_RECORD_LENGTH
+
+    def format(self):
+        for scriptTable in self.scriptTables:
+            scriptTable.format()
+            print()

@@ -13,6 +13,7 @@ import VheaTable
 import OS2Table
 import PostTable
 from OpenType import GSUBTable
+from OpenType import GPOSTable
 
 
 def tableFactory(fontFile, tagBytes, checksum, offset, length):
@@ -32,5 +33,7 @@ def tableFactory(fontFile, tagBytes, checksum, offset, length):
         return VheaTable.Table(fontFile, tagBytes, checksum, offset, length)
     elif tagBytes == b'GSUB':
         return GSUBTable.Table(fontFile, tagBytes, checksum, offset, length)
+    elif tagBytes == b'GPOS':
+        return GPOSTable.Table(fontFile, tagBytes, checksum, offset, length)
     else:
         return FontTable.Table(fontFile, tagBytes, checksum, offset, length)
