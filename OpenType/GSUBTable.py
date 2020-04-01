@@ -8,6 +8,7 @@ import struct
 
 import FontTable
 from OpenType import ScriptList
+from OpenType import FeatureList
 
 
 class Table(FontTable.Table):
@@ -24,8 +25,10 @@ class Table(FontTable.Table):
             struct.unpack(self.GSUB_TABLE_HEADER_FORMAT, rawTable[:self.GSUB_TABLE_HEADER_LENGTH])
 
         self.scriptList = ScriptList.ScriptListTable(rawTable, scriptListOffset)
+        self.featureList = FeatureList.FeatureListTable(rawTable, featureListOffset)
 
     def format(self):
         print(f"      Version: {self.majorVersion}.{self.minorVersion}")
 
         self.scriptList.format()
+        self.featureList.format()
