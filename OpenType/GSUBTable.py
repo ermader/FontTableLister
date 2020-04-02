@@ -9,7 +9,19 @@ import struct
 import FontTable
 from OpenType import ScriptList
 from OpenType import FeatureList
+from OpenType import LookupList
 
+lookupTypes = {
+    0: "(zero)",
+    1: "Single",
+    2: "Multiple",
+    3: "Alternate",
+    4: "Ligature",
+    5: "Context",
+    6: "Chaining Context",
+    7: "Extension Substitution",
+    8: "Reverse Chaining Context Single"
+}
 
 class Table(FontTable.Table):
     GSUB_TABLE_HEADER_FORMAT = ">HHHHH"
@@ -26,9 +38,11 @@ class Table(FontTable.Table):
 
         self.scriptList = ScriptList.ScriptListTable(rawTable, scriptListOffset)
         self.featureList = FeatureList.FeatureListTable(rawTable, featureListOffset)
+        self.lookupList = LookupList.LookupListTable(rawTable, lookupListOffset)
 
     def format(self):
         print(f"      Version: {self.majorVersion}.{self.minorVersion}")
 
         self.scriptList.format()
         self.featureList.format()
+        self.lookupList.format(lookupTypes)
