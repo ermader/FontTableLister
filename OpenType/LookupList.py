@@ -17,8 +17,10 @@ class LookupTable:
         (self.lookupType, self.lookupFlags, self.subTableCount) = \
             struct.unpack(self.LOOKUP_TABLE_FORMAT, rawTable[lookupTableStart:lookupTableEnd])
 
-    def format(self,lookupTypes, lookupIndex):
-        print(f"      Lookup{lookupIndex:02d}: {lookupTypes[self.lookupType]}")
+    def format(self, lookupTypes, lookupIndex):
+        lookupTypeName = lookupTypes[self.lookupType] if self.lookupType in lookupTypes else f"LookupType{self.lookupType}"
+
+        print(f"      Lookup{lookupIndex:02d}: {lookupTypeName}")
         print(f"        lookupFlags: {utility.formatHex16(self.lookupFlags)}")
         print(f"        subTableCount: {self.subTableCount:d}")
         print()
