@@ -4,19 +4,11 @@ Created on Feb 03, 2020
 @author: emader
 '''
 
-import NameRecord
+from PlatformAndEncoding import WindowsPlatform
+from NameTable import NameRecord
+
 
 class WindowsNameRecord(NameRecord.NameRecord):
-    ENCODING_ID_SYMBOL = 0
-    ENCODING_ID_UNICODE_BMP = 1
-    ENCODING_ID_SHIFT_JIS = 2
-    ENCODING_ID_PRC = 3
-    ENCODING_ID_BIG_5 = 4
-    ENCODING_ID_WANSUNG = 5
-    ENCODING_ID_JOHAB = 6
-    # 7 - 9 reserved
-    ENCODING_ID_UNICODE_UCS4 = 10
-
     # There are a *lot* more of these
     # These are just the ones I have encountered, or expect to encounter
     LANGUAGE_ID_ARABIC_ALGERIA = 0x1401
@@ -83,25 +75,25 @@ class WindowsNameRecord(NameRecord.NameRecord):
         NameRecord.NameRecord.__init__(self, platformID, encodingID, languageID, nameID, length, offset, stringBytes)
 
         self.encodingNames = {
-            self.ENCODING_ID_SYMBOL : "Symbol",
-            self.ENCODING_ID_UNICODE_BMP : "Unicode BMP",
-            self.ENCODING_ID_SHIFT_JIS : "Shift JIS",
-            self.ENCODING_ID_PRC : "PRC",
-            self.ENCODING_ID_BIG_5 : "Big 5",
-            self.ENCODING_ID_WANSUNG : "Wansung",
-            self.ENCODING_ID_JOHAB : "Johab",
-            self.ENCODING_ID_UNICODE_UCS4 : "Unicode UCS4"
+            WindowsPlatform.ENCODING_ID_SYMBOL : "Symbol",
+            WindowsPlatform.ENCODING_ID_UNICODE_BMP : "Unicode BMP",
+            WindowsPlatform.ENCODING_ID_SHIFT_JIS : "Shift JIS",
+            WindowsPlatform.ENCODING_ID_PRC : "PRC",
+            WindowsPlatform.ENCODING_ID_BIG_5 : "Big 5",
+            WindowsPlatform.ENCODING_ID_WANSUNG : "Wansung",
+            WindowsPlatform.ENCODING_ID_JOHAB : "Johab",
+            WindowsPlatform.ENCODING_ID_UNICODE_UCS4 : "Unicode UCS4"
         }
 
         self.stringEncodings = {
-            self.ENCODING_ID_SYMBOL: "utf_16_be", # really?
-            self.ENCODING_ID_UNICODE_BMP: "utf_16_be",
-            self.ENCODING_ID_SHIFT_JIS: "Shift_jis",
-            self.ENCODING_ID_PRC: "gb2312",
-            self.ENCODING_ID_BIG_5: "big5",
-            self.ENCODING_ID_WANSUNG: "cp949",
-            self.ENCODING_ID_JOHAB: "johab",
-            self.ENCODING_ID_UNICODE_UCS4: "utf_32_be"
+            WindowsPlatform.ENCODING_ID_SYMBOL: "utf_16_be", # really?
+            WindowsPlatform.ENCODING_ID_UNICODE_BMP: "utf_16_be",
+            WindowsPlatform.ENCODING_ID_SHIFT_JIS: "Shift_jis",
+            WindowsPlatform.ENCODING_ID_PRC: "gb2312",
+            WindowsPlatform.ENCODING_ID_BIG_5: "big5",
+            WindowsPlatform.ENCODING_ID_WANSUNG: "cp949",
+            WindowsPlatform.ENCODING_ID_JOHAB: "johab",
+            WindowsPlatform.ENCODING_ID_UNICODE_UCS4: "utf_32_be"
         }
 
         self.languageNames = {

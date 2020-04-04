@@ -5,7 +5,6 @@ Created on Jan 26, 2020
 '''
 import struct
 
-import utility
 import TableFactory
 
 
@@ -55,10 +54,10 @@ class Collection(object):
             fontList.append(Font(fontFile, offset))
 
 
-import NameRecordFactory
-from NameRecord import NameRecord
-from MacintoshNameRecord import MacintoshNameRecord
-from WindowsNameRecord import WindowsNameRecord
+from NameTable import NameRecordFactory
+from NameTable.NameRecord import NameRecord
+from NameTable.MacintoshNameRecord import MacintoshNameRecord
+from NameTable.WindowsNameRecord import WindowsNameRecord
 
 class Font(object):
     '''

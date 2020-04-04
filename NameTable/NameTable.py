@@ -6,9 +6,9 @@ Created on Feb 03, 2020
 
 import struct
 
-import utility
 import FontTable
-import NameRecordFactory
+from NameTable import NameRecordFactory
+
 
 # typedef struct {
 #     UInt16 format;

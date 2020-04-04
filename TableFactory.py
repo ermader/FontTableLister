@@ -7,7 +7,7 @@ Created on Jan 26, 2020
 import FontTable
 import HeadTable
 import HheaTable
-import NameTable
+from NameTable import NameTable
 import MaxpTable
 import VheaTable
 import OS2Table

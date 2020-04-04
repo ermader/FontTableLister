@@ -6,16 +6,9 @@ Created on Feb 03, 2020
 
 import struct
 
-import NameRecord
-import UnicodeNameRecord
-import MacintoshNameRecord
-import WindowsNameRecord
+from PlatformAndEncoding import PLATFORM_ID_UNICODE, PLATFORM_ID_MACINTOSH, PLATFORM_ID_WINDOWS
 
-PLATFORM_ID_UNICODE = 0
-PLATFORM_ID_MACINTOSH = 1
-# platform ID 2 is deprecated
-PLATFORM_ID_WINDOWS = 3
-PLATFORM_ID_CUSTOM = 4
+from NameTable import UnicodeNameRecord, MacintoshNameRecord, NameRecord, WindowsNameRecord
 
 NAME_RECORD_FORMAT = ">HHHHHH"
 NAME_RECORD_LENGTH = struct.calcsize(NAME_RECORD_FORMAT)
