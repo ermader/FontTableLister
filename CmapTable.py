@@ -29,6 +29,9 @@ class Table(FontTable.Table):
 
         rawTable = self.rawData()
 
+        self.charToGlyphMap = {}
+        self.glyphToCharMap = {}
+
         (version, numTables) = struct.unpack(self.CMAP_HEADER_FORMAT, rawTable[:self.CMAP_HEADER_LENGTH])
 
         encodingRecordStart = self.CMAP_HEADER_LENGTH
@@ -45,8 +48,6 @@ class Table(FontTable.Table):
                 if subtableFormat == 4:
                     charCodes = []
                     glyphIDs = []
-                    self.charToGlyphMap = {}
-                    self.glyphToCharMap = {}
                     encodingSubtableEnd = encodingSubtableStart + self.ENCODING_SUBTABLE_4_LENGTH
 
                     (_, _, _, segCountX2, searchRange, entrySelector, rangeShift) = \
