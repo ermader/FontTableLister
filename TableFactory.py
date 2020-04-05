@@ -5,6 +5,7 @@ Created on Jan 26, 2020
 '''
 
 import FontTable
+import CmapTable
 import HeadTable
 import HheaTable
 from NameTable import NameTable
@@ -18,6 +19,8 @@ from OpenType import GDEFTable
 
 
 def tableFactory(fontFile, tagBytes, checksum, offset, length):
+    if tagBytes == b'cmap':
+        return CmapTable.Table(fontFile, tagBytes, checksum, offset, length)
     if tagBytes == b'head':
         return HeadTable.Table(fontFile, tagBytes, checksum, offset, length)
     elif tagBytes == b'hhea':

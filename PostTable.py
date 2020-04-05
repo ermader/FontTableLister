@@ -80,13 +80,17 @@ class Table(FontTable.Table):
 
 
 
-    def getGlyphName(self, glyphID):
+    def glyphNameFromNameIndex(self, nameIndex):
         standardGlyphCount = len(standardGlyphNames)
 
-        if glyphID < standardGlyphCount:
-            return standardGlyphNames[glyphID]
+        if nameIndex < standardGlyphCount:
+            return standardGlyphNames[nameIndex]
 
-        return self.names[glyphID - standardGlyphCount]
+        return self.names[nameIndex - standardGlyphCount]
+
+    def getGlyphName(self, glyphID):
+        nameIndex = self.nameIndexTable[glyphID]
+        return self.glyphNameFromNameIndex(nameIndex)
 
     def format(self):
         FontTable.formatLine("Version", utility.formatFloat3(self.version))
@@ -102,6 +106,6 @@ class Table(FontTable.Table):
         if self.version == 2.0:
            for glyphID in range(0, self.numGlyphs):
                 nameIndex = self.nameIndexTable[glyphID]
-                print(f"      {glyphID:>6d} {nameIndex:>6d}    {self.getGlyphName(nameIndex)}")
+                print(f"      {glyphID:>6d} {nameIndex:>6d}    {self.glyphNameFromNameIndex(nameIndex)}")
 
         print()

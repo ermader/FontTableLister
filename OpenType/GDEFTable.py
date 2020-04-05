@@ -32,6 +32,6 @@ class Table(FontTable.Table):
 
         self.classDefinitionTable = ClassDefinitionTable.Table(rawTable, glyphClassDefOffset) if glyphClassDefOffset != 0 else None
 
-    def format(self):
-        self.classDefinitionTable.format(classNames)
+    def format(self, postTable):
+        self.classDefinitionTable.format(classNames, postTable)
         print()

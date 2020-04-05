@@ -69,6 +69,9 @@ if arguments.format:
         print(f"  Formatted '{tableTag}' table:")
         table = fontObject.getTable(tableTag)
         if table:
-            table.format()
+            if tableTag == 'GDEF':
+                table.format(fontObject.getTable('post'))
+            else:
+                table.format()
             
         print()
