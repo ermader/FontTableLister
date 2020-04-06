@@ -4,7 +4,7 @@ Created on Feb 03, 2020
 @author: emader
 '''
 
-from PlatformAndEncoding import WindowsPlatform
+from PlatformAndEncoding import PLATFORM_ID_WINDOWS, WindowsPlatform, getPLatformName
 from NameTable import NameRecord
 
 
@@ -73,17 +73,6 @@ class WindowsNameRecord(NameRecord.NameRecord):
 
     def __init__(self, platformID, encodingID, languageID, nameID, length, offset, stringBytes):
         NameRecord.NameRecord.__init__(self, platformID, encodingID, languageID, nameID, length, offset, stringBytes)
-
-        self.encodingNames = {
-            WindowsPlatform.ENCODING_ID_SYMBOL : "Symbol",
-            WindowsPlatform.ENCODING_ID_UNICODE_BMP : "Unicode BMP",
-            WindowsPlatform.ENCODING_ID_SHIFT_JIS : "Shift JIS",
-            WindowsPlatform.ENCODING_ID_PRC : "PRC",
-            WindowsPlatform.ENCODING_ID_BIG_5 : "Big 5",
-            WindowsPlatform.ENCODING_ID_WANSUNG : "Wansung",
-            WindowsPlatform.ENCODING_ID_JOHAB : "Johab",
-            WindowsPlatform.ENCODING_ID_UNICODE_UCS4 : "Unicode UCS4"
-        }
 
         self.stringEncodings = {
             WindowsPlatform.ENCODING_ID_SYMBOL: "utf_16_be", # really?
@@ -158,7 +147,10 @@ class WindowsNameRecord(NameRecord.NameRecord):
         }
 
     def platformName(self):
-        return "Windows"
+        return getPLatformName(PLATFORM_ID_WINDOWS)
+
+    def encodingName(self):
+        return WindowsPlatform.getEncodingName(self.encodingID)
 
     def getStringEncoding(self):
         return self.stringEncodings.get(self.encodingID)

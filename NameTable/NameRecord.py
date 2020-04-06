@@ -80,11 +80,6 @@ class NameRecord:
         return f"Platform {self.platformID:d}"
 
     def encodingName(self):
-        name = self.encodingNames.get(self.encodingID)
-
-        if name is not None:
-            return name
-
         return f"Encoding {self.encodingID:d}"
 
     def languageName(self):

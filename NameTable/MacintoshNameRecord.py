@@ -4,7 +4,7 @@ Created on Feb 03, 2020
 @author: emader
 '''
 
-from PlatformAndEncoding import MacintoshPlatform
+from PlatformAndEncoding import PLATFORM_ID_MACINTOSH, MacintoshPlatform, getPLatformName
 from NameTable import NameRecord
 
 
@@ -61,41 +61,6 @@ class MacintoshNameRecord(NameRecord.NameRecord):
 
     def __init__(self, platformID, encodingID, languageID, nameID, length, offset, stringBytes):
         NameRecord.NameRecord.__init__(self, platformID, encodingID, languageID, nameID, length, offset, stringBytes)
-
-        self.encodingNames = {
-            MacintoshPlatform.ENCODING_ID_ROMAN : "Roman",
-            MacintoshPlatform.ENCODING_ID_JAPANESE : "Japanese",
-            MacintoshPlatform.ENCODING_ID_CHINESE_TRADITIONAL : "Chinese (Traditional)",
-            MacintoshPlatform.ENCODING_ID_KOREAN : "Korean",
-            MacintoshPlatform.ENCODING_ID_ARABIC : "Arabic",
-            MacintoshPlatform.ENCODING_ID_HEBREW : "Hebrew",
-            MacintoshPlatform.ENCODING_ID_GREEK : "Greek",
-            MacintoshPlatform.ENCODING_ID_RUSSIAN : "Russian",
-            MacintoshPlatform.ENCODING_ID_RSYMBOL : "RSymbol",
-            MacintoshPlatform.ENCODING_ID_DEVANAGARI : "Devanagari",
-            MacintoshPlatform.ENCODING_ID_GURMUKHI : "Gurmukhi",
-            MacintoshPlatform.ENCODING_ID_GUJARATI : "Gujarati",
-            MacintoshPlatform.ENCODING_ID_ORIYA : "Oriya",
-            MacintoshPlatform.ENCODING_ID_BENGALI : "Bengali",
-            MacintoshPlatform.ENCODING_ID_TAMIL : "Tamil",
-            MacintoshPlatform.ENCODING_ID_TELEGU : "Telegu",
-            MacintoshPlatform.ENCODING_ID_KANNADA : "Kannada",
-            MacintoshPlatform.ENCODING_ID_MALAYALAM : "Malayalam",
-            MacintoshPlatform.ENCODING_ID_SINHALESE : "Sinhalese",
-            MacintoshPlatform.ENCODING_ID_BURMESE : "Burmese",
-            MacintoshPlatform.ENCODING_ID_KHMER : "Khmer",
-            MacintoshPlatform.ENCODING_ID_THAI : "Thai",
-            MacintoshPlatform.ENCODING_ID_LAO : "Lao",
-            MacintoshPlatform.ENCODING_ID_GEORGIAN : "Georgian",
-            MacintoshPlatform.ENCODING_ID_ARMENIAN : "Armenian",
-            MacintoshPlatform.ENCODING_ID_CHINESE_SIMPLIFIED : "Chinese (Simplified)",
-            MacintoshPlatform.ENCODING_ID_TIBETAN : "Tibetan",
-            MacintoshPlatform.ENCODING_ID_MONGOLIAN : "Mongolian",
-            MacintoshPlatform.ENCODING_ID_GEEZ : "Geez",
-            MacintoshPlatform.ENCODING_ID_SLAVIC : "Slavic",
-            MacintoshPlatform.ENCODING_ID_VIETNAMESE : "Vietnamese",
-            MacintoshPlatform.ENCODING_ID_SINDHI : "Sindhi"
-        }
 
         #
         # Many of these don't seem to have Python codecs...
@@ -237,7 +202,10 @@ class MacintoshNameRecord(NameRecord.NameRecord):
         }
 
     def platformName(self):
-        return "Macintosh"
+        return getPLatformName(PLATFORM_ID_MACINTOSH)
+
+    def encodingName(self):
+        return MacintoshPlatform.getEncodingName(self.encodingID)
 
     def getStringEncoding(self):
         if self.encodingID == MacintoshPlatform.ENCODING_ID_ROMAN:
