@@ -101,7 +101,7 @@ class Table(FontTable.Table):
                             glyphIDs.extend([(charCode + idDelta) & 0xFFFF for charCode in charCodeRange])
                         else:
                             for charCode in charCodeRange:
-                                index = charCode - startCode + glyphIndexArrayIndex
+                                index = glyphIndexArrayIndex + charCode - startCode
                                 glyphID = (glyphIndexArray[index] + idDelta) & 0xFFFF if glyphIndexArray[index] != 0 else 0
                                 glyphIDs.append(glyphID)
 
