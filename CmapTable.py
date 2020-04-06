@@ -114,3 +114,8 @@ class Table(FontTable.Table):
             encodingRecordStart = encodingRecordEnd
             encodingRecordEnd += self.ENCODING_RECORD_LENGTH
 
+    def getCharCode(self, glyphID):
+        if glyphID in self.glyphToCharMap:
+            return self.glyphToCharMap[glyphID]
+
+        return None

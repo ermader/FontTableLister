@@ -113,3 +113,15 @@ class Font(object):
 
     def getPostscriptName(self):
         return self.queryName(NameRecord.NAME_ID_POSTSCRIPT_NAME)
+
+    def getGlyphName(self, glyphID):
+        postTable = self.getTable('post')
+        if postTable is not None and postTable.version == 2.0:
+            return postTable.getGlyphName(glyphID)
+        else:
+            cmapTable = self.getTable('cmap') # we'll assume the font has a 'cmap' table...
+            charCode = cmapTable.getCharCode(glyphID)
+            if charCode is not None:
+                return f"uni{charCode:04X}"
+
+            return f"gid{glyphID:05d}"

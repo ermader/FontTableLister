@@ -95,7 +95,7 @@ class OS2Table(FontTable.Table):
     OS2_TABLE_FORMAT_2_LENGTH = struct.calcsize(OS2_TABLE_FORMAT_2)
     OS2_TABLE_FORMAT_5_LENGTH = struct.calcsize(OS2_TABLE_FORMAT_5)
 
-    def format(self):
+    def format(self, parentFont):
         rawTable = self.rawData()
 
         formatStart = 0

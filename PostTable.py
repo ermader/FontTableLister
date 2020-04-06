@@ -92,7 +92,7 @@ class Table(FontTable.Table):
         nameIndex = self.nameIndexTable[glyphID]
         return self.glyphNameFromNameIndex(nameIndex)
 
-    def format(self):
+    def format(self, parentFont):
         FontTable.formatLine("Version", utility.formatFloat3(self.version))
         FontTable.formatLine("Italic Angle", utility.formatFloat3(self.italicAngle))
         FontTable.formatLine("Underline Position", utility.formatDecimal(self.underlinePosition))

@@ -39,7 +39,7 @@ class Table(FontTable.Table):
     HEAD_TABLE_FORMAT = ">iiIIHHIIIIhhhhHHhhh"
     HEAD_TABLE_LENGTH = struct.calcsize(HEAD_TABLE_FORMAT)
 
-    def format(self):
+    def format(self, parentFont):
         rawTable = self.rawData()
         version, revision, adjust, magic, flags, upm, cd0, cd1, md0, md1, xMin, yMin, xMax, yMax, style, lowPPEM, dirHint, ilocFormat, gdFormat = struct.unpack(
             self.HEAD_TABLE_FORMAT, rawTable)

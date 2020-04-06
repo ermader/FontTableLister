@@ -31,7 +31,7 @@ class Table(FontTable.Table):
     MAXP_TABLE_FORMAT = ">i14H"
     MAXP_TABLE_LENGTH = struct.calcsize(MAXP_TABLE_FORMAT)
 
-    def format(self):
+    def format(self, parentFont):
         rawTable = self.rawData()
         (version, numGlyphs, maxPoints, maxContours, maxComponentPoints, maxComponentContours, maxZones, maxTwilightPoints, maxStorage, maxFunctionDefs, maxInstructionDefs, maxStackElements, maxSizeOfInstructions, maxComponentElements, maxComponentDepth) = struct.unpack(self.MAXP_TABLE_FORMAT, rawTable)
 

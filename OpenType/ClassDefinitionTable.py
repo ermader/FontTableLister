@@ -56,12 +56,9 @@ class Table:
                 classRangeRecordStart = classRangeRecordEnd
                 classRangeRecordEnd += self.CLASS_RANGE_RECORD_LENGTH
 
-    def format(self, classNames, postTable):
+    def format(self, classNames, parentFont):
         for (glyphID, glyphClass) in self.classTable.items():
-            glyphName = postTable.getGlyphName(glyphID)
-
-            if glyphName is None:
-                glyphName = f"glyph{glyphID:05d}"
+            glyphName = parentFont.getGlyphName(glyphID)
 
             className = classNames[glyphClass] if glyphClass in classNames else f"Class {glyphClass}"
             print(f"      {glyphName}: {className}")

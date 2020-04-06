@@ -30,7 +30,7 @@ class Table(FontTable.Table):
     HHEA_TABLE_FORMAT = ">ihhhHhhhhhh4hhH"
     HHEA_TABLE_LENGTH = struct.calcsize(HHEA_TABLE_FORMAT)
 
-    def format(self):
+    def format(self, parentFont):
         rawTable = self.rawData()
         version, ascent, descent, lineGap, awMax, lsbMin, rsbMin, xMaxExtent, caretSlopeRise, caretSlopeRun, caretOffset, r0, r1, r2, r2, metricDataFormat, numLongMetrics = struct.unpack(self.HHEA_TABLE_FORMAT, rawTable)
 

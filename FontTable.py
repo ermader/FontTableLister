@@ -59,6 +59,6 @@ class Table(object):
             print()
         print()
 
-    def format(self):
+    def format(self, parentFont):
         print(f"      Don't know how to format a '{self.tag:s}' table.")
         print()

@@ -53,7 +53,7 @@ class NameTable(FontTable.Table):
 
         return None
 
-    def format(self):
+    def format(self, parentFont):
         self.getNameRecords()
 
         for nameRecord in self.nameRecords:

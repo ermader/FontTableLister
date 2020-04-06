@@ -41,7 +41,7 @@ class Table(FontTable.Table):
         self.featureList = FeatureList.FeatureListTable(rawTable, featureListOffset)
         self.lookupList = LookupList.LookupListTable(rawTable, lookupListOffset)
 
-    def format(self):
+    def format(self, parentFont):
         print(f"      Version: {self.majorVersion}.{self.minorVersion}")
 
         self.scriptList.format()
