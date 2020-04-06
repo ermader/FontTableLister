@@ -53,7 +53,7 @@ class Table(FontTable.Table):
                     (_, _, _, segCountX2, searchRange, entrySelector, rangeShift) = \
                         struct.unpack(self.ENCODING_SUBTABLE_4_FORMAT, rawTable[encodingSubtableStart:encodingSubtableEnd])
 
-                    segCount = int(segCountX2 / 2)
+                    segCount = segCountX2 // 2
                     segmentArrayUnsignedFormat = f">{segCount}H"
                     segmentArraySignedFormat = f">{segCount}h"
                     segmentArrayLength = struct.calcsize(segmentArrayUnsignedFormat)
@@ -74,20 +74,25 @@ class Table(FontTable.Table):
                     segmentArrayEnd = segmentArrayStart + segmentArrayLength
                     idRangeOffsets = struct.unpack(segmentArrayUnsignedFormat, rawTable[segmentArrayStart:segmentArrayEnd])
 
-                    glyphIDArrayStart = segmentArrayEnd
-                    glyphIDArrayEnd = encodingSubtableStart + subtableLength
-                    glyphIDArrayCount = int((glyphIDArrayEnd - glyphIDArrayStart) / 2) # should really use the size of an "H"...
-                    glyphIDArrayFormat = f">{glyphIDArrayCount}H"
-                    glyphIDArray = struct.unpack(glyphIDArrayFormat, rawTable[glyphIDArrayStart:glyphIDArrayEnd])
+                    glyphIndexArrayStart = segmentArrayEnd
+                    glyphIndexArrayEnd = encodingSubtableStart + subtableLength
+                    glyphIndexArrayCount = (glyphIndexArrayEnd - glyphIndexArrayStart) // 2 # should really use the size of an "H"...
+                    glyphIndexArrayFormat = f">{glyphIndexArrayCount}H"
+                    glyphIndexArray = struct.unpack(glyphIndexArrayFormat, rawTable[glyphIndexArrayStart:glyphIndexArrayEnd])
 
-                    for segment in range(segCount -1):
+                    for segment in range(segCount - 1): # we skip the last segment, which is for glyph 0xFFFF
                         startCode = startCodes[segment]
                         endCode = endCodes[segment]
                         idDelta = idDeltas[segment]
                         idRangeOffset = idRangeOffsets[segment]
 
-                        # this is because of the indexing magic built into format 4...
-                        magic = idRangeOffset // 2 - startCode + segment - segCount
+                        # idRangeOffset[i], if not zero, is the byte offset from idRangeOffset[i] to the
+                        # corresponding entry into glyphIndexArray. The spec. gives this expression to
+                        # retrieve that entry:
+                        # glyphIndex = *( &idRangeOffset[i] + idRangeOffset[i] / 2 + (charCode - startCode[i]) )
+                        # So: idRangeOffset // 2 is the number of words from idRangeOffset[i] to the entry
+                        # in glyphIndexArray, so the index is idRangeOffset // 2 - segCount + i
+                        glyphIndexArrayIndex = idRangeOffset // 2 - segCount + segment
 
                         charCodeRange = range(startCode, endCode + 1)
                         charCodes.extend(charCodeRange)
@@ -96,8 +101,8 @@ class Table(FontTable.Table):
                             glyphIDs.extend([(charCode + idDelta) & 0xFFFF for charCode in charCodeRange])
                         else:
                             for charCode in charCodeRange:
-                                index = charCode + magic
-                                glyphID = (glyphIDArray[index] + idDelta) & 0xFFFF if glyphIDArray[index] != 0 else 0
+                                index = charCode - startCode + glyphIndexArrayIndex
+                                glyphID = (glyphIndexArray[index] + idDelta) & 0xFFFF if glyphIndexArray[index] != 0 else 0
                                 glyphIDs.append(glyphID)
 
                     z = list(zip(charCodes, glyphIDs))
