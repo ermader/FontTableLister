@@ -24,6 +24,8 @@ class UnicodeNameRecord(NameRecord.NameRecord):
             UnicodePlatform.ENCODING_ID_UNICODE_FULL: "utf_32-be"
         }
 
+        self.languageNames = {}
+
     def platformName(self):
         return getPLatformName(PLATFORM_ID_UNICODE)
 
