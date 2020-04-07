@@ -22,6 +22,18 @@ def getPLatformName(platformID):
     
     return platformName if platformName is not None else f"PLatform {platformID}"
 
+def getEncodingName(platformID, encodingID):
+    if platformID == PLATFORM_ID_UNICODE:
+        encodingName = UnicodePlatform.getEncodingName(encodingID)
+    elif platformID == PLATFORM_ID_MACINTOSH:
+        encodingName = MacintoshPlatform.getEncodingName(encodingID)
+    elif platformID == PLATFORM_ID_WINDOWS:
+        encodingName = WindowsPlatform.getEncodingName(encodingID)
+    else:
+        encodingName = f"Encoding {encodingID}"
+
+    return encodingName
+
 class UnicodePlatform:
     ENCODING_ID_UNICODE_1_0 = 0
     ENCODING_ID_UNICODE_1_1 = 1
