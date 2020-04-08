@@ -115,6 +115,32 @@ class EncodingRecord:
 
         return (charCodes, glyphCodes)
 
+    def readSubtableFormat12(self, rawTable, subtableStart):
+        ENCODING_SUBTABLE_12_FORMAT = ">HHIII"
+        ENCODING_SUBTABLE_12_LENGTH = struct.calcsize(ENCODING_SUBTABLE_12_FORMAT);
+
+        MAP_GROUP_RECORD_FORMAT = ">III"
+        MAP_GROUP_RECORD_LENGTH = struct.calcsize(MAP_GROUP_RECORD_FORMAT)
+
+        charCodes = []
+        glyphCodes = []
+        subtableEnd = subtableStart + ENCODING_SUBTABLE_12_LENGTH
+
+        (_, _, subtableLength, subtableLanguage, numGroups) = struct.unpack(ENCODING_SUBTABLE_12_FORMAT, rawTable[subtableStart:subtableEnd])
+
+        mapGroupStart = subtableEnd
+        mapGroupEnd = mapGroupStart + MAP_GROUP_RECORD_LENGTH
+        for _ in range(numGroups):
+            (startCharCode, endCharCode, startGlyphID) = struct.unpack(MAP_GROUP_RECORD_FORMAT, rawTable[mapGroupStart:mapGroupEnd])
+
+            charCodeRange = range(startCharCode, endCharCode + 1)
+            charCodes.extend(charCodeRange)
+            glyphCodes.extend([startGlyphID + char for char in charCodeRange])
+            mapGroupStart = mapGroupEnd
+            mapGroupEnd += MAP_GROUP_RECORD_LENGTH
+
+        return (charCodes, glyphCodes)
+
     def __init__(self, rawTable, platformID, encodingID, offset32, offsetToSubtableMap):
         self.platformID = platformID
         self.encodingID = encodingID
@@ -125,12 +151,17 @@ class EncodingRecord:
 
         (subtableFormat, ) = struct.unpack(self.ENCODING_SUBTABLE_FORMAT,  rawTable[encodingSubtableStart:encodingSubtableEnd])
         if self.offset32 not in offsetToSubtableMap:
+            charCodes = []
+            glyphCodes = []
+
             if subtableFormat == 0:
                 (charCodes, glyphCodes) = self.readSubtableFormat0(rawTable, encodingSubtableStart)
             elif subtableFormat == 4: # want symbolic constants for these?
                 (charCodes, glyphCodes) = self.readSubtableFormat4(rawTable, encodingSubtableStart)
             elif subtableFormat == 6:
                 (charCodes, glyphCodes) = self.readSubtableFormat6(rawTable, encodingSubtableStart)
+            elif subtableFormat == 12:
+                (charCodes, glyphCodes) = self.readSubtableFormat12(rawTable, encodingSubtableStart)
 
             z = list(zip(charCodes, glyphCodes))
             offsetToSubtableMap[offset32] = ({c: g for (c, g) in z}, {g: c for (c, g) in z})
@@ -143,12 +174,6 @@ class Table(FontTable.Table):
 
     ENCODING_RECORD_FORMAT = ">HHI"
     ENCODING_RECORD_LENGTH = struct.calcsize(ENCODING_RECORD_FORMAT)
-
-    ENCODING_SUBTABLE_FORMAT = ">HHH"
-    ENCODING_SUBTABLE_LENGTH = struct.calcsize(ENCODING_SUBTABLE_FORMAT)
-
-    ENCODING_SUBTABLE_4_FORMAT = ">HHHHHHH"
-    ENCODING_SUBTABLE_4_LENGTH = struct.calcsize(ENCODING_SUBTABLE_4_FORMAT)
 
     def __init__(self, fontFile, tagBytes, checksum, offset, length):
         FontTable.Table.__init__(self, fontFile, tagBytes, checksum, offset, length)
@@ -170,6 +195,7 @@ class Table(FontTable.Table):
             encodingRecordStart = encodingRecordEnd
             encodingRecordEnd += self.ENCODING_RECORD_LENGTH
 
+        # Need a better search here. Should probably prefer 32-bit Unicode if it's there...g
         for encodingRecord in self.encodingRecords:
             platformID = encodingRecord.platformID
             encodingID = encodingRecord.encodingID
