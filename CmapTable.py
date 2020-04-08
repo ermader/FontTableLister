@@ -135,7 +135,8 @@ class EncodingRecord:
 
             charCodeRange = range(startCharCode, endCharCode + 1)
             charCodes.extend(charCodeRange)
-            glyphCodes.extend([startGlyphID + char for char in charCodeRange])
+            gids = [startGlyphID + char - startCharCode for char in charCodeRange]
+            glyphCodes.extend([startGlyphID + char - startCharCode for char in charCodeRange])
             mapGroupStart = mapGroupEnd
             mapGroupEnd += MAP_GROUP_RECORD_LENGTH
 
