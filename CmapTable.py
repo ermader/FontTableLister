@@ -249,6 +249,12 @@ class Table(FontTable.Table):
 
         return None
 
+    def getGlyphID(self, charCode):
+        if charCode in self.charToGlyphMap:
+            return self.charToGlyphMap[charCode]
+
+        return None
+
     def format(self, parentFont):
         for encodingRecord in self.encodingRecords:
             platformID = encodingRecord.platformID

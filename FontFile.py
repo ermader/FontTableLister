@@ -125,3 +125,11 @@ class Font(object):
                 return f"uni{charCode:04X}"
 
             return f"gid{glyphID:05d}"
+
+    def getGlyphID(self, charCode):
+        cmapTable = self.getTable('cmap')
+        return cmapTable.getGlyphID(charCode)
+
+    def getCharCode(self, glyphID):
+        cmapTable = self.getTable('cmap')
+        return cmapTable.getCharCode(glyphID)
