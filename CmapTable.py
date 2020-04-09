@@ -230,8 +230,6 @@ class Table(FontTable.Table):
         encodingRecordStart = self.CMAP_HEADER_LENGTH
         encodingRecordEnd = encodingRecordStart + self.ENCODING_RECORD_LENGTH
 
-        bestMapping = len(self.preferredMappings)
-
         for _ in range(numTables):
             (platformID, encodingID, offset32) = struct.unpack(self.ENCODING_RECORD_FORMAT, rawTable[encodingRecordStart:encodingRecordEnd])
 
