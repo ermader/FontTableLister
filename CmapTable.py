@@ -7,13 +7,32 @@ Created on Apr 4, 2020
 import struct
 import utility
 
-from PlatformAndEncoding import PLATFORM_ID_UNICODE, PLATFORM_ID_MACINTOSH, PLATFORM_ID_WINDOWS, UnicodePlatform, MacintoshPlatform, WindowsPlatform, getPLatformName, getEncodingName
+from PlatformAndEncoding import PLATFORM_ID_UNICODE, PLATFORM_ID_MACINTOSH, PLATFORM_ID_WINDOWS,\
+     UnicodePlatform, MacintoshPlatform, WindowsPlatform, getPLatformName, getEncodingName
 
 import FontTable
 
 class EncodingRecord:
     ENCODING_SUBTABLE_FORMAT = ">H" # only the format
     ENCODING_SUBTABLE_LENGTH = struct.calcsize(ENCODING_SUBTABLE_FORMAT)
+
+    formatNames = {
+        0: "Byte encoding table (0)",
+        2: "High-byte mapping through table (2)",
+        4: "Segment mapping to delta values (4)",
+        6: "Trimmed table mapping (6)",
+        8: "Mixed 16-bit and 32-bit coverage (8)",
+        10: "Trimmed mapping (10)",
+        12: "Segmented coverage (12)",
+        13: "Many-to-one range mappings (13)",
+        14: "Unicode variation sequences (14)"
+    }
+
+    def getFormatName(self):
+        if self.subtableFormat in self.formatNames:
+            return self.formatNames[self.subtableFormat]
+
+        return f"Format {self.subtableFormat}"
 
     def readSubtableFormat0(self, rawTable, subtableStart):
         ENCODING_SUBTABLE_0_FORMAT = ">HHH"
@@ -150,18 +169,18 @@ class EncodingRecord:
         encodingSubtableStart = offset32
         encodingSubtableEnd = encodingSubtableStart + self.ENCODING_SUBTABLE_LENGTH
 
-        (subtableFormat, ) = struct.unpack(self.ENCODING_SUBTABLE_FORMAT,  rawTable[encodingSubtableStart:encodingSubtableEnd])
+        (self.subtableFormat, ) = struct.unpack(self.ENCODING_SUBTABLE_FORMAT,  rawTable[encodingSubtableStart:encodingSubtableEnd])
         if self.offset32 not in offsetToSubtableMap:
             charCodes = []
             glyphCodes = []
 
-            if subtableFormat == 0:
+            if self.subtableFormat == 0:
                 (charCodes, glyphCodes) = self.readSubtableFormat0(rawTable, encodingSubtableStart)
-            elif subtableFormat == 4: # want symbolic constants for these?
+            elif self.subtableFormat == 4: # want symbolic constants for these?
                 (charCodes, glyphCodes) = self.readSubtableFormat4(rawTable, encodingSubtableStart)
-            elif subtableFormat == 6:
+            elif self.subtableFormat == 6:
                 (charCodes, glyphCodes) = self.readSubtableFormat6(rawTable, encodingSubtableStart)
-            elif subtableFormat == 12:
+            elif self.subtableFormat == 12:
                 (charCodes, glyphCodes) = self.readSubtableFormat12(rawTable, encodingSubtableStart)
 
             z = list(zip(charCodes, glyphCodes))
@@ -170,11 +189,33 @@ class EncodingRecord:
 
 
 class Table(FontTable.Table):
+    preferredMappings = [
+        (PLATFORM_ID_UNICODE, UnicodePlatform.ENCODING_ID_UNICODE_FULL),
+        (PLATFORM_ID_WINDOWS, WindowsPlatform.ENCODING_ID_UNICODE_UCS4),
+        (PLATFORM_ID_UNICODE, UnicodePlatform.ENCODING_ID_UNICODE_2_0_FULL),
+        (PLATFORM_ID_UNICODE, -1),  # Any encoding will do...
+        (PLATFORM_ID_WINDOWS, WindowsPlatform.ENCODING_ID_UNICODE_BMP)
+    ]
+    preferredMappingCount = len(preferredMappings)
+    bestMapping = preferredMappingCount
+    bestEncodingRecord = None
+
     CMAP_HEADER_FORMAT = ">HH"
     CMAP_HEADER_LENGTH = struct.calcsize(CMAP_HEADER_FORMAT)
 
     ENCODING_RECORD_FORMAT = ">HHI"
     ENCODING_RECORD_LENGTH = struct.calcsize(ENCODING_RECORD_FORMAT)
+
+    def rankMapping(self, encodingRecord):
+        platformID = encodingRecord.platformID
+        encodingID = encodingRecord.encodingID
+
+        for mapping in range(self.preferredMappingCount):
+            (preferredPlatformID, preferredEncodingID) = self.preferredMappings[mapping]
+            if preferredPlatformID == platformID and (preferredEncodingID == encodingID or preferredEncodingID == -1):
+                if mapping < self.bestMapping:
+                    self.bestMapping = mapping
+                    self.bestEncodingRecord = encodingRecord
 
     def __init__(self, fontFile, tagBytes, checksum, offset, length):
         FontTable.Table.__init__(self, fontFile, tagBytes, checksum, offset, length)
@@ -188,22 +229,21 @@ class Table(FontTable.Table):
 
         encodingRecordStart = self.CMAP_HEADER_LENGTH
         encodingRecordEnd = encodingRecordStart + self.ENCODING_RECORD_LENGTH
+
+        bestMapping = len(self.preferredMappings)
+
         for _ in range(numTables):
             (platformID, encodingID, offset32) = struct.unpack(self.ENCODING_RECORD_FORMAT, rawTable[encodingRecordStart:encodingRecordEnd])
 
             self.encodingRecords.append(EncodingRecord(rawTable, platformID, encodingID, offset32, self.offsetToSubtableMap))
 
+            self.rankMapping(self.encodingRecords[-1])
+
             encodingRecordStart = encodingRecordEnd
             encodingRecordEnd += self.ENCODING_RECORD_LENGTH
 
-        # Need a better search here. Should probably prefer 32-bit Unicode if it's there...g
-        for encodingRecord in self.encodingRecords:
-            platformID = encodingRecord.platformID
-            encodingID = encodingRecord.encodingID
-            offset32 = encodingRecord.offset32
-            if platformID == PLATFORM_ID_UNICODE or platformID == PLATFORM_ID_WINDOWS and (encodingID == WindowsPlatform.ENCODING_ID_UNICODE_BMP or encodingID == WindowsPlatform.ENCODING_ID_UNICODE_UCS4):
-                (self.charToGlyphMap, self.glyphToCharMap) = self.offsetToSubtableMap[offset32]
-                break
+        if self.bestEncodingRecord is not None:
+            (self.charToGlyphMap, self.glyphToCharMap) = self.offsetToSubtableMap[self.bestEncodingRecord.offset32]
 
     def getCharCode(self, glyphID):
         if glyphID in self.glyphToCharMap:
@@ -216,6 +256,6 @@ class Table(FontTable.Table):
             platformID = encodingRecord.platformID
             encodingID = encodingRecord.encodingID
             offset32 = encodingRecord.offset32
+            formatName = encodingRecord.getFormatName()
 
-            encodingName = getEncodingName(platformID, encodingID)
-            print(f"      {getPLatformName(platformID)}, {getEncodingName(platformID, encodingID)}, {utility.formatHex32(offset32)}")
+            print(f"      {getPLatformName(platformID):10} {getEncodingName(platformID, encodingID):15} {utility.formatHex32(offset32):12} {formatName}")
