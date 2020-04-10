@@ -50,8 +50,8 @@ print(f"{fileName}/{fontObject.getPostscriptName()}:")
 if arguments.list:
     print(f"  {fontObject.getPostscriptName()} contains {len(fontObject.tables):d} tables:")
     
-    for table in fontObject.tables:
-        print(f"    '{table.tag}' 0x{table.checksum:08X} 0x{table.offset:08X} {table.length:10,d}")
+    for (tag, table) in fontObject.tables.items():
+        print(f"    '{tag}' 0x{table.checksum:08X} 0x{table.offset:08X} {table.length:10,d}")
     
     print()
 
