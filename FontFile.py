@@ -69,6 +69,8 @@ class Font(object):
     FONT_DIRECTORY_ENTRY_FORMAT = ">4sIII"
     FONT_DIRECTORY_ENTRY_LENGTH = struct.calcsize(FONT_DIRECTORY_ENTRY_FORMAT)
 
+    requiredTables = ['cmap', 'head', 'hhea', 'hmtx', 'maxp', 'name', 'OS/2', 'post']
+
     def __init__(self, fontFile, fontOffset=0):
         fontFile.seek(fontOffset)
         directoryHeaderData = fontFile.read(self.FONT_DIRECTORY_HEADER_LENGTH)
@@ -111,13 +113,38 @@ class Font(object):
     def getPostscriptName(self):
         return self.queryName(NameRecord.NAME_ID_POSTSCRIPT_NAME)
 
+    def hasRequiredTables(self):
+        for requiredTable in self.requiredTables:
+            if requiredTable not in self.tables:
+                return False
+
+        return True
+
+    def missingRequiredTables(self):
+        missingTables = []
+
+        for requiredTable in self.requiredTables:
+            if requiredTable not in self.tables:
+                missingTables.append(requiredTable)
+
+        return missingTables
+
+    def hasUnicodeMapping(self):
+        cmapTable = self.getTable('cmap')
+        return cmapTable.hasUnicodeMapping()
+
+    def hasTrueTypeOutlines(self):
+        return 'glyf' in self.tables and 'loca' in self.tables
+
+    def hasCFFOutlines(self):
+        return 'CFF ' in self.tables or 'CFF2' in self.tables
+
     def getGlyphName(self, glyphID):
         postTable = self.getTable('post')
-        if postTable is not None and postTable.version == 2.0:
+        if postTable.version == 2.0:
             return postTable.getGlyphName(glyphID)
         else:
-            cmapTable = self.getTable('cmap') # we'll assume the font has a 'cmap' table...
-            charCode = cmapTable.getCharCode(glyphID)
+            charCode = self.getCharCode(glyphID)
             if charCode is not None:
                 return f"uni{charCode:04X}"
 

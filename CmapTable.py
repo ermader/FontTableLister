@@ -233,15 +233,19 @@ class Table(FontTable.Table):
         for _ in range(numTables):
             (platformID, encodingID, offset32) = struct.unpack(self.ENCODING_RECORD_FORMAT, rawTable[encodingRecordStart:encodingRecordEnd])
 
-            self.encodingRecords.append(EncodingRecord(rawTable, platformID, encodingID, offset32, self.offsetToSubtableMap))
+            encodingRecord = EncodingRecord(rawTable, platformID, encodingID, offset32, self.offsetToSubtableMap)
+            self.encodingRecords.append(encodingRecord)
 
-            self.rankMapping(self.encodingRecords[-1])
+            self.rankMapping(encodingRecord)
 
             encodingRecordStart = encodingRecordEnd
             encodingRecordEnd += self.ENCODING_RECORD_LENGTH
 
         if self.bestEncodingRecord is not None:
             (self.charToGlyphMap, self.glyphToCharMap) = self.offsetToSubtableMap[self.bestEncodingRecord.offset32]
+
+    def hasUnicodeMapping(self):
+        return self.bestEncodingRecord is not None
 
     def getCharCode(self, glyphID):
         if glyphID in self.glyphToCharMap:

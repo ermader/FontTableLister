@@ -47,6 +47,23 @@ else:
 
 print(f"{fileName}/{fontObject.getPostscriptName()}:")
 
+if fontObject.hasRequiredTables():
+    print("  Has all required tables.")
+else:
+    print(f"  Missing required tables: {fontObject.missingRequiredTables()}")
+
+if fontObject.hasTrueTypeOutlines():
+    print("  Has TrueType outlines.")
+elif fontObject.hasCFFOutlines():
+    print("  Has CFF outlines.")
+else:
+    print("  Has neither TrueType nor CFF outlines!")
+
+if fontObject.hasUnicodeMapping():
+    print("  Has a usable Unicode 'cmap'.\n")
+else:
+    print("  Does not have a usable Unicode 'cmap'.\n")
+
 if arguments.list:
     print(f"  {fontObject.getPostscriptName()} contains {len(fontObject.tables):d} tables:")
     
