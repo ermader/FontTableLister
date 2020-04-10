@@ -75,7 +75,7 @@ class Font(object):
         self.scalerType, self.numTables, self.searchRange, self.entrySelector, self.rangeShift = struct.unpack(
             self.FONT_DIRECTORY_HEADER_FORMAT, directoryHeaderData)
 
-        self.tables = []
+        self.tables = {}
         rawDirectoryEntries = fontFile.read(self.FONT_DIRECTORY_ENTRY_LENGTH * self.numTables)
 
         entryStart = 0
@@ -84,17 +84,14 @@ class Font(object):
         for _ in range(self.numTables):
             tagBytes, checksum, offset, length = struct.unpack(self.FONT_DIRECTORY_ENTRY_FORMAT, rawDirectoryEntries[entryStart:entryEnd])
 
-            self.tables.append(TableFactory.tableFactory(fontFile, tagBytes, checksum, offset, length))
+            table = TableFactory.tableFactory(fontFile, tagBytes, checksum, offset, length)
+            self.tables[table.tag] = table
 
             entryStart = entryEnd
             entryEnd += self.FONT_DIRECTORY_ENTRY_LENGTH
 
     def getTable(self, tableTag):
-        for table in self.tables:
-            if table.tag == tableTag:
-                return table
-
-        return None
+        return self.tables[tableTag] if tableTag in self.tables else None
 
     def queryName(self, nameID):
         queries = [
